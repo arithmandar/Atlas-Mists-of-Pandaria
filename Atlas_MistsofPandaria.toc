@@ -8,11 +8,13 @@
 ## Notes-deDE: Mists of Pandaria Instanzkarten
 ## Notes-zhTW: 潘達利亞之謎副本地圖模組
 ## Notes-zhCN: 熊猫人之谜地图
-## Version: 1.32.00
+## Version: 1.32.01
 ## Author: arith, Dynaletik, dubcat, Resike
-## X-Date: Jul. 13, 2015
+## X-Date: May 11, 2016
 ## X-Credits: Dan Gilbert, Lothaer
 ## X-Email: atlas.addon@gmail.com
 ## X-Website: http://www.atlasmod.com
 ## X-Category: Map
 ## RequiredDeps: Atlas
+
+Atlas_MistsofPandaria_DB.lua
