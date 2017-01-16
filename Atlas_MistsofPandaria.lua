@@ -2,7 +2,7 @@
 --[[
 
 	Atlas, a World of Warcraft instance map browser
-	Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
+	Copyright 2011 ~ 2017 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
 
 	This file is part of Atlas.
 
@@ -137,6 +137,8 @@ local myMaps = {
 		PlayerLimit = "5";
 		Acronym = L["SM"];
 		Module = "Atlas_MistsofPandaria";
+		PrevMap = "ScarletMonastery";
+		NextMap = "ScarletHalls";
 		{ BLUE.." A) "..ALC["Entrance"], 10001 };
 		{ BLUE.." B) "..BZ["Scarlet Monastery"], 10002 };
 		{ BLUE.." C) "..BZ["Scarlet Halls"], 10003 };
@@ -150,6 +152,8 @@ local myMaps = {
 		WorldMapID = "874";
 		JournalInstanceID = "311";
 		Module = "Atlas_MistsofPandaria";
+		PrevMap = "ScarletMonasteryEnt";
+		NextMap = "ScarletMonastery";
 		{ BLUE.." A) "..ALC["Entrance"], 10001 };
 		{ WHIT.." 1) "..L["Commander Lindon"], 10002 };
 		{ WHIT.." 2) "..Atlas_GetBossName("Houndmaster Braun", 660), 660 };
@@ -169,6 +173,8 @@ local myMaps = {
 		WorldMapID = "874";
 		JournalInstanceID = "316";
 		Module = "Atlas_MistsofPandaria";
+		PrevMap = "ScarletHalls";
+		NextMap = "ScarletMonasteryEnt";
 		{ BLUE.." A) "..ALC["Entrance"], 10001 };
 		{ GREN.." 1') "..L["Hooded Crusader"], 10002 };
 		{ WHIT.." 1) "..Atlas_GetBossName("Thalnos the Soulrender", 688), 688 };
@@ -212,6 +218,7 @@ local myMaps = {
 		WorldMapID = "877";
 		JournalInstanceID = "312";
 		Module = "Atlas_MistsofPandaria";
+		NextMap = "ShadoPanMonasteryB";
 		{ BLUE.." B-H) "..ALC["Connection"], 10001 };
 		{ WHIT.." 1) "..Atlas_GetBossName("Gu Cloudstrike", 673), 673 };
 		{ WHIT..INDENT..Atlas_GetBossName("Azure Serpent", 673, 2), 673 };
@@ -226,6 +233,7 @@ local myMaps = {
 		WorldMapID = "877";
 		JournalInstanceID = "312";
 		Module = "Atlas_MistsofPandaria";
+		PrevMap = "ShadoPanMonasteryA";
 		{ BLUE.." A) "..ALC["Entrance"], 10001 };
 		{ BLUE.." B-H) "..ALC["Connection"], 10002 };
 		{ WHIT.." 2) "..Atlas_GetBossName("Master Snowdrift", 657), 657 };
@@ -241,6 +249,7 @@ local myMaps = {
 		WorldMapID = "887";
 		JournalInstanceID = "324";
 		Module = "Atlas_MistsofPandaria";
+		NextMap = "SiegeofNiuzaoTempleB";
 		{ BLUE.." A) "..ALC["Entrance"], 10001 };
 		{ BLUE.." B-C) "..ALC["Connection"], 10002 };
 		{ WHIT.." 1) "..Atlas_GetBossName("Vizier Jin'bak", 693), 693 };
@@ -255,6 +264,7 @@ local myMaps = {
 		WorldMapID = "887";
 		JournalInstanceID = "324";
 		Module = "Atlas_MistsofPandaria";
+		PrevMap = "SiegeofNiuzaoTempleA";
 		{ BLUE.." C) "..ALC["Connection"], 10001 };
 		{ WHIT.." 2) "..Atlas_GetBossName("Commander Vo'jak", 738), 738 };
 		{ WHIT.." 3) "..Atlas_GetBossName("General Pa'valak", 692), 692 };
@@ -270,6 +280,7 @@ local myMaps = {
 		WorldMapID = "953";
 		JournalInstanceID = "369";
 		Module = "Atlas_MistsofPandaria";
+		NextMap = "SiegeofOrgrimmarB";
 		{ BLUE.." A) "..ALC["Entrance"], 10001 };
 		{ BLUE.." B-D) "..ALC["Connection"], 10002 };
 		{ WHIT.." 1) "..Atlas_GetBossName("Immerseus", 852), 852 };
@@ -287,6 +298,8 @@ local myMaps = {
 		WorldMapID = "953";
 		JournalInstanceID = "369";
 		Module = "Atlas_MistsofPandaria";
+		PrevMap = "SiegeofOrgrimmarA";
+		NextMap = "SiegeofOrgrimmarC";
 		{ BLUE.." B-C) "..ALC["Connection"], 10001 };
 		{ WHIT.." 2) "..Atlas_GetBossName("The Fallen Protectors", 849), 849 };
 		{ WHIT..INDENT..Atlas_GetBossName("He Softfoot", 849, 2), 849 };
@@ -303,6 +316,8 @@ local myMaps = {
 		WorldMapID = "953";
 		JournalInstanceID = "369";
 		Module = "Atlas_MistsofPandaria";
+		PrevMap = "SiegeofOrgrimmarB";
+		NextMap = "SiegeofOrgrimmarD";
 		{ BLUE.." D-E) "..ALC["Connection"], 10001 };
 		{ WHIT.." 5) "..Atlas_GetBossName("Galakras", 868), 868 };
 		{ WHIT.." 6) "..Atlas_GetBossName("Iron Juggernaut", 864), 864 };
@@ -320,6 +335,7 @@ local myMaps = {
 		WorldMapID = "953";
 		JournalInstanceID = "369";
 		Module = "Atlas_MistsofPandaria";
+		PrevMap = "SiegeofOrgrimmarC";
 		{ BLUE.." E) "..ALC["Connection"], 10001 };
 		{ WHIT.." 8) "..Atlas_GetBossName("General Nazgrim", 850), 850 };
 		{ WHIT.." 9) "..Atlas_GetBossName("Malkorok", 846), 846 };
@@ -405,6 +421,7 @@ local myMaps = {
 		WorldMapID = "930";
 		JournalInstanceID = "362";
 		Module = "Atlas_MistsofPandaria";
+		NextMap = "ThroneofThunderB";
 		{ ORNG..REPUTATION..ALC["Colon"]..BF["Shado-Pan Assault"] };
 		{ BLUE.." A) "..ALC["Entrance"], 10001 };
 		{ BLUE.." B) "..ALC["Connection"], 10002 };
@@ -428,6 +445,8 @@ local myMaps = {
 		WorldMapID = "930";
 		JournalInstanceID = "362";
 		Module = "Atlas_MistsofPandaria";
+		PrevMap = "ThroneofThunderA";
+		NextMap = "ThroneofThunderC";
 		{ ORNG..REPUTATION..ALC["Colon"]..BF["Shado-Pan Assault"] };
 		{ BLUE.." B-C) "..ALC["Connection"], 10001 };
 		{ WHIT.." 4) "..Atlas_GetBossName("Tortos", 825), 825 };
@@ -445,6 +464,8 @@ local myMaps = {
 		WorldMapID = "930";
 		JournalInstanceID = "362";
 		Module = "Atlas_MistsofPandaria";
+		PrevMap = "ThroneofThunderB";
+		NextMap = "ThroneofThunderD";
 		{ ORNG..REPUTATION..ALC["Colon"]..BF["Shado-Pan Assault"] };
 		{ BLUE.." C-E) "..ALC["Connection"], 10001 };
 		{ WHIT.." 7) "..Atlas_GetBossName("Durumu the Forgotten", 818), 818 };
@@ -465,6 +486,7 @@ local myMaps = {
 		WorldMapID = "930";
 		JournalInstanceID = "362";
 		Module = "Atlas_MistsofPandaria";
+		PrevMap = "ThroneofThunderC";
 		{ ORNG..REPUTATION..ALC["Colon"]..BF["Shado-Pan Assault"] };
 		{ BLUE.." D-F) "..ALC["Connection"], 10001 };
 		{ WHIT.." 10) "..Atlas_GetBossName("Iron Qon", 817), 817 };
