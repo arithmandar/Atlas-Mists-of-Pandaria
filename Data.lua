@@ -21,12 +21,27 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 --]]
+-----------------------------------------------------------------------
+-- Upvalued Lua API.
+-----------------------------------------------------------------------
+-- Functions
+local _G = getfenv(0)
+local pairs = _G.pairs
+-- Libraries
+-- ----------------------------------------------------------------------------
+-- AddOn namespace.
+-- ----------------------------------------------------------------------------
+local FOLDER_NAME, private = ...
+local LibStub = _G.LibStub;
+local BZ = Atlas_GetLocaleLibBabble("LibBabble-SubZone-3.0")
+local BF = Atlas_GetLocaleLibBabble("LibBabble-Faction-3.0")
+local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
+local ALC = LibStub("AceLocale-3.0"):GetLocale("Atlas")
+local Atlas = LibStub("AceAddon-3.0"):GetAddon("Atlas")
+local MoP = Atlas:GetModule(private.module_name)
 
-
-local BZ = Atlas_GetLocaleLibBabble("LibBabble-SubZone-3.0");
-local BF = Atlas_GetLocaleLibBabble("LibBabble-Faction-3.0");
-local L = LibStub("AceLocale-3.0"):GetLocale("Atlas_MistsofPandaria");
-local ALC = LibStub("AceLocale-3.0"):GetLocale("Atlas");
+local db = {}
+MoP.db = db
 
 local BLUE = "|cff6666ff";
 local GREN = "|cff66cc33";
@@ -40,10 +55,7 @@ local WHIT = "|cffffffff";
 local YLOW = "|cffcccc33";
 local INDENT = "      ";
 
-local myMaps = {
---************************************************
--- Mists of Pandaria Instances
---************************************************
+db.AtlasMaps = {
 	GateoftheSettingSun = {
 		ZoneName = { BZ["Gate of the Setting Sun"] };
 		Location = { BZ["Dread Wastes"]..ALC["Slash"]..BZ["Vale of Eternal Blossoms"] };
@@ -875,8 +887,611 @@ local myMaps = {
 		{ "Cutting Edge: Lei Shen", "ac=8238" };
 		{ "Cutting Edge: Ra-den", "ac=8260" };
 	};
+}
+
+-- Atlas Map NPC Description Data
+db.AtlasMaps_NPC_DB = {
+	GateoftheSettingSun = {
+		{ 1, 655, 235, 400 }; -- Saboteur Kip'tilak
+		{ 2, 675, 235, 169 }; -- Striker Ga'dok
+		{ 3, 676, 235, 138 }; -- Commander Ri'mok
+		{ 4, 649, 229, 284 }; -- Raigonn
+		{ "A", 10001, 327, 401 };
+		{ "B", 10002, 309, 291 };
+	};
+	HeartofFear = {
+		{ 1, 745, 318, 250 }; -- Imperial Vizier Zor'lok
+		{ 2, 744, 269, 74 }; -- Blade Lord Ta'yak
+		{ 3, 713, 428, 46 }; -- Garalon
+		{ 4, 741, 427, 124 }; -- Wind Lord Mel'jarak
+		{ 5, 737, 225, 377 }; -- Amber-Shaper Un'sok
+		{ 6, 743, 64, 377 }; -- Grand Empress Shek'zeer
+		{ "A", 10001, 161, 289 };
+		{ "B", 10002, 151, 64 };
+		{ "B", 10002, 433, 82 };
+	};
+	MoguShanPalace = {
+		{ 1, 708, 203, 454 }; -- Trial of the King
+		{ 2, 690, 83, 247 }; -- Gekkan
+		{ 3, 698, 379, 309 }; -- Xin the Weaponmaster
+		{ "A", 10001, 7, 61 };
+		{ "B", 10002, 135, 268 };
+		{ "B", 10002, 263, 340 };
+		{ "C", 10002, 310, 459 };
+		{ "C", 10002, 430, 59 };
+		{ "1'", 10003, 34, 52 };
+	};
+	MoguShanVaults = {
+		{ 1, 679, 364, 315 }; -- The Stone Guard
+		{ 2, 689, 316, 240 }; -- Feng the Accursed
+		{ 3, 682, 318, 116 }; -- Gara'jal the Spiritbinder
+		{ 4, 687, 181, 142 }; -- The Spirit Kings
+		{ 5, 726, 46, 303 }; -- Elegon
+		{ 6, 677, 236, 382 }; -- Will of the Emperor
+		{ "A", 10001, 474, 344 };
+		{ "B", 10002, 216, 165 };
+		{ "B", 10002, 229, 197 };
+	};
+	ScarletHalls = {
+		{ 1, 10002, 230, 384 }; -- Commander Lindon
+		{ 2, 660, 260, 308 }; -- Houndmaster Braun
+		{ 3, 654, 326, 113 }; -- Armsmaster Harlan
+		{ 4, 656, 223, 21 }; -- Flameweaver Koegler
+		{ "A", 10001, 153, 496 };
+		{ "1'", 10003, 158, 477 };
+		{ "2'", 10004, 241, 453 }; 
+		{ "3'", 10005, 269, 287 };
+	};
+	ScarletMonastery = {
+		{ 1, 688, 131, 61 }; -- Thalnos the Soulrender
+		{ 2, 671, 231, 332 }; -- Brother Korloff
+		{ 3, 674, 226, 439 }; -- High Inquisitor Whitemane
+		{ "A", 10001, 382, 62 };
+		{ "1'", 10002, 304, 62 };
+		{ "1", 10003, 227, 87 };
+	};
+	ScarletMonasteryEnt = {
+		{ "A", 10001, 93, 359 }; -- Entrance
+		{ "B", 10002, 286, 176 }; -- Scarlet Monastery
+		{ "C", 10003, 350, 285 }; -- Scarlet Halls
+	};
+	Scholomance = {
+		{ 1, 659, 140, 133 }; -- Instructor Chillheart
+		{ 2, 663, 394, 57 }; -- Jandice Barov
+		{ 3, 665, 329, 90 }; -- Rattlegore
+		{ 4, 666, 356, 165 }; -- Lilian Voss
+		{ 5, 10003, 360, 291 }; --Professor Slate
+		{ 6, 684, 286, 391 }; -- Darkmaster Gandling
+		{ "A", 10001, 6, 165 }; 
+		{ "B", 10002, 201, 61 };
+		{ "B", 10002, 500, 90 };
+		{ "C", 10002, 136, 213 };
+		{ "C", 10002, 393, 344 };
+		{ "D", 10002, 136, 243 };
+		{ "D", 10002, 287, 372 };
+		{ "1'", 10004, 36, 130 };
+		{ "2'", 10005, 111, 125 };
+		{ "3'", 10006, 463, 96 };
+		{ "4'", 10007, 317, 153 };
+		{ "5'", 10008, 343, 203 };
+		{ "6'", 10009, 344, 226 };
+		
+	};
+	ShadoPanMonasteryA = {
+		{ 1, 673, 329, 310 }; -- Gu Cloudstrike
+		{ 4, 686, 366, 236 }; -- Taran Zhu
+		{ "B", 10001, 374, 311 };
+		{ "C", 10001, 301, 345 };
+		{ "D", 10001, 287, 369 };
+		{ "E", 10001, 183, 351 };
+		{ "F", 10001, 120, 310 };
+		{ "G", 10001, 159, 195 };
+		{ "H", 10001, 222, 210 };
+	};
+	ShadoPanMonasteryB = {
+		{ 2, 657, 55, 307 }; -- Master Snowdrift
+		{ 3, 685, 373, 373 }; -- Sha of Violence
+		{ "A", 10001, 216, 174 };
+		{ "B", 10002, 40, 164 };
+		{ "C", 10002, 407, 45 };
+		{ "D", 10002, 318, 194 };
+		{ "E", 10002, 203, 454 };
+		{ "F", 10002, 41, 282 };
+		{ "G", 10002, 270, 479 };
+		{ "H", 10002, 418, 419 };
+		{ "1'", 10003, 189, 160 };
+	};
+	SiegeofNiuzaoTempleA = {
+		{ 1, 693, 143, 158 }; -- Vizier Jin'bak
+		{ "A", 10001, 212, 323 };
+		{ "B", 10002, 150, 250 };
+		{ "B", 10002, 379, 443 };
+		{ "C", 10002, 263, 346 };
+		{ "1'", 10003, 189, 251 };
+	};
+	SiegeofNiuzaoTempleB = {
+		{ 2, 738, 205, 325 }; -- Commander Vo'jak
+		{ 3, 692, 304, 236 }; -- General Pa'valak
+		{ 4, 727, 301, 141 }; -- Wing Leader Ner'onok
+		{ "C", 10001, 261, 313 };
+	};
+	SiegeofOrgrimmarA = {
+		{ 1, 852, 208, 101 }; -- Immerseus
+		{ 3, 866, 272, 349 }; -- Norushen
+		{ 4, 867, 129, 380 }; -- Sha of Pride
+		{ "A", 10001, 465, 100 };
+		{ "B", 10002, 61, 184 };
+		{ "C", 10002, 319, 183 };
+		{ "D", 10002, 78, 345 };
+		{ "D", 10002, 99, 439 };
+	};
+	SiegeofOrgrimmarB = {
+		{ 2, 849, 168, 195 }; -- The Fallen Protectors
+		{ "B", 10001, 178, 181 };
+		{ "C", 10001, 236, 323 };
+	};
+	SiegeofOrgrimmarC = {
+		{ 5, 868, 430, 266 }; -- Galakras
+		{ 6, 864, 185, 308 }; -- Iron Juggernaut
+		{ 7, 856, 169, 158 }; -- Kor'kron Dark Shaman
+		{ "D", 10001, 496, 264 };
+		{ "E", 10001, 239, 49 };
+	};
+	SiegeofOrgrimmarD = {
+		{ 8, 850, 127, 282 }; -- General Nazgrim
+		{ 9, 846, 197, 180 }; -- Malkorok
+		{ 10, 870, 266, 252 }; -- Spoils of Pandaria
+		{ 11, 851, 286, 380 }; -- Thok the Bloodthirsty
+		{ 12, 865, 389, 130 }; -- Siegecrafter Blackfuse
+		{ 13, 853, 434, 235 }; -- Paragons of the Klaxxi
+		{ 14, 869, 451, 410 }; -- Garrosh Hellscream
+		{ "E", 10001, 62, 214 };
+	};
+	StormstoutBrewery = {
+		{ 1, 668, 175, 340 }; -- Ook-Ook
+		{ 2, 669, 314, 280 }; -- Hoptallus
+		{ 3, 670, 430, 400 }; -- Yan-Zhu the Uncasked
+		{ "A", 10001, 374, 72 };
+		{ "B", 10002, 96, 75 };
+		{ "B", 10002, 13, 341 };
+		{ "C", 10002, 250, 447 };
+		{ "C", 10002, 283, 405 };
+		{ "D", 10002, 323, 232 };
+		{ "D", 10002, 421, 85 };
+		{ "E", 10002, 499, 226 };
+		{ "E", 10002, 494, 334 };
+		{ "1'", 10003, 353, 55 };
+	};
+	TempleOfTheJadeSerpent = {
+		{ 1, 672, 218, 68 }; -- Wise Mari
+		{ 2, 664, 65, 380 }; -- Lorewalker Stonestep
+		{ 3, 658, 213, 252 }; -- Liu Flameheart
+		{ 4, 335, 355, 296 }; -- Sha of Doubt
+		{ "A", 10001, 81, 211 };
+		{ "1'", 10002, 141, 213 };
+	};
+	TerraceofEndlessSpring = {
+		{ 1, 683, 398, 265 }; -- Protectors of the Endless
+		{ 2, 742, 360, 265 }; -- Tsulong
+		{ 3, 729, 296, 265 }; -- Lei Shi
+		{ 4, 709, 204, 265 }; -- Sha of Fear
+		{ "A", 10001, 456, 265 };
+	};
+	ThroneofThunderA = {
+		{ 1, 827, 111, 196 }; -- Jin'rokh the Breaker
+		{ 2, 819, 266, 335 }; -- Horridon
+		{ 3, 816, 372, 149 }; -- Council of Elders
+		{ "A", 10001, 6, 196 };
+		{ "B", 10002, 496, 149 };
+		{ "1", 10003, 115, 337 };
+		{ "2", 10004, 270, 152 };
+	};
+	ThroneofThunderB = {
+		{ 4, 825, 88, 359 }; -- Tortos
+		{ 5, 821, 296, 185 }; -- Megaera
+		{ 6, 828, 406, 308 }; -- Ji-Kun
+		{ "B", 10001, 27, 359 };
+		{ "C", 10001, 366, 340 };
+		{ "3", 10002, 192, 250 };
+	};
+	ThroneofThunderC = {
+		{ 7, 818, 392, 173 }; -- Durumu the Forgotten
+		{ 8, 820, 235, 414 }; -- Primordius
+		{ 9, 824, 156, 304 }; -- Dark Animus
+		{ "C", 10001, 465, 21 };
+		{ "D", 10001, 283, 415 };
+		{ "E", 10001, 194, 94 };
+		{ "4", 10002, 161, 364 };
+		{ "5", 10003, 258, 133 };
+	};
+	ThroneofThunderD = {
+		{ 10, 817, 146, 160 }; -- Iron Qon
+		{ 11, 829, 405, 79 }; -- Twin Consorts
+		{ 12, 832, 118, 339 }; -- Lei Shen
+		{ 13, 831, 370, 453 }; -- Ra-den
+		{ "D", 10001, 370, 247 };
+		{ "E", 10001, 126, 210 };
+		{ "F", 10001, 108, 243 };
+		{ "F", 10001, 467, 220 };
+		{ "6", 10002, 477, 144 };
+	};
 };
 
-for k, v in pairs(myMaps) do
-	AtlasMaps[k] = v;
-end
+--[[
+	AssocDefaults{}
+
+	Default map to be auto-selected when no SubZone data is available.
+
+	For example, "Dire Maul" has a subzone called "Warpwood Quarter" located in East Dirl Maul, however, there are also 
+	some areas which have not been named with any subzone, and we would like to pick a proper default map in this condition.
+
+	Define this table entries only when the instance has multiple maps.
+
+	Table index is zone name, it need to be localized value, but we will handle the localization with BabbleSubZone library.
+	The table value is map's key-name.
+]]
+db.AssocDefaults = {
+	[BZ["Shado-Pan Monastery"]] =		"ShadoPanMonasteryA",	-- MoP
+	[BZ["Siege of Niuzao Temple"]] =	"SiegeofNiuzaoTempleA",	-- MoP
+	[BZ["Siege of Orgrimmar"]] =		"SiegeofOrgrimmarA",	-- MoP
+	[BZ["Throne of Thunder"]] = 		"ThroneofThunderB", -- MoP
+}
+
+--[[
+	SubZoneData{}
+
+	Define SubZone data for default map to be selected for instance which has multiple maps.
+	Subzone data should be able to be pulled out from WMOAreaTable for indoor areas, or from AreaTable for outdoor areas.
+
+	Array Syntax: 
+	["localized zone name"] = {
+		["atlas map name"] = {
+			["localized subzone name 1"],
+			["localized subzone name 2"],
+		},
+	},
+]]
+db.SubZoneData = {
+	-- Shado-Pan Monastery
+	[BZ["Shado-Pan Monastery"]] = {
+		-- Shado-Pan Monastery A
+		["ShadoPanMonasteryA"] = {
+			BZ["Cloudstrike Dojo"],
+			BZ["Grove of Falling Blossoms"],
+		},
+		-- Shado-Pan Monastery B
+		["ShadoPanMonasteryB"] = {
+			BZ["Snowdrift Dojo"],
+			BZ["Sealed Chambers"],
+		},
+	},
+	-- Siege of Niuzao Temple
+	[BZ["Siege of Niuzao Temple"]] = {
+		-- Siege of Niuzao Temple A
+		["SiegeofNiuzaoTempleA"] = {
+			BZ["Hollowed Out Tree"],
+		},
+		-- Siege of Niuzao Temple B
+		["SiegeofNiuzaoTempleB"] = {
+			BZ["Rear Staging Area"],
+			BZ["Forward Assault Camp"],
+		},
+	},
+	-- Siege of Orgrimmar
+	[BZ["Siege of Orgrimmar"]] = {
+		-- Siege of Orgrimmar A
+		["SiegeofOrgrimmarA"] = {
+			BZ["Pools of Power"],
+			BZ["Ruined Passage"],
+			BZ["Big Blossom Mine"],
+			BZ["Chamber of Purification"],
+			BZ["Vault of Y'Shaarj"],
+		},
+		-- Siege of Orgrimmar B
+		["SiegeofOrgrimmarB"] = {
+			BZ["Scarred Vale"],
+		},
+		-- Siege of Orgrimmar C
+		["SiegeofOrgrimmarC"] = {
+			BZ["Bladefist Bay"],
+			BZ["Dranosh'ar Landing"],
+			BZ["The Darkspear Offensive"],
+			BZ["Before the Gates"],
+			BZ["Gates of Orgrimmar"],
+			BZ["Valley of Strength"],
+			BZ["The Drag"],
+		},
+		-- Siege of Orgrimmar D
+		["SiegeofOrgrimmarD"] = {
+			BZ["Cleft of Shadow"],
+			BZ["Ragefire Chasm"],
+			BZ["The Descent"],
+			BZ["Rough-Hewn Passage"],
+			BZ["Kor'kron Barracks"],
+			BZ["Underhold Nexus"],
+			BZ["Artifact Storage"],
+			BZ["The Menagerie"],
+			BZ["The Siegeworks"],
+			BZ["Chamber of the Paragons"],
+			BZ["The Inner Sanctum"],
+			BZ["Terrace of Endless Spring"],
+			BZ["Temple of the Jade Serpent"],
+			BZ["Temple of the Red Crane"],
+		},
+	},
+	-- Throne of Thunder
+	[BZ["Throne of Thunder"]] = {
+		-- Throne of Thunder A
+		["ThroneofThunderA"] = {
+			BZ["Ruined Approach"],
+			BZ["Overgrown Statuary"],
+			BZ["Grand Overlook"],
+			BZ["Royal Amphitheater"],
+			BZ["Lightning Promenade"],
+			BZ["The Stormbridge"],
+		},
+		-- Throne of Thunder B
+		["ThroneofThunderB"] = {
+			BZ["Lair of Tortos"],
+			BZ["Forgotten Depths"],
+			BZ["Roost of Ji-Kun"],
+			BZ["Refuse Disposal"],
+		},
+		-- Throne of Thunder C
+		["ThroneofThunderC"] = {
+			BZ["Watcher's Sanctum"],
+			BZ["Halls of Flesh-Shaping"],
+			BZ["Saurok Creation Pit"],
+			BZ["Sewer Access Point"],
+		},
+		-- Throne of Thunder D
+		["ThroneofThunderD"] = {
+			BZ["Grand Courtyard"],
+			BZ["Hall of Kings"],
+			BZ["Celestial Enclave"],
+			BZ["Lightning Ascent"],
+			BZ["Pinnacle of Storms"],
+			BZ["Hidden Cell"],
+		},
+	},
+}
+
+--[[
+	OutdoorZoneToAtlas{}
+
+	Maps to auto-select to from outdoor zones.
+
+	Table index is sub-zone name, it need to be localized value, but we will handle
+	the localization with BabbleSubZone library.
+	The table value is map's key-name.
+
+	Duplicates are commented out.
+	Not for localization.
+]]
+db.OutdoorZoneToAtlas = {
+	[BZ["Dread Wastes"]] =			"HeartofFear",
+	[BZ["Kun-Lai Summit"]] = 		"MoguShanVaults",	-- MoP
+	[BZ["Tirisfal Glades"]] = 		"ScarletMonasteryEnt",	-- MoP
+	[BZ["Western Plaguelands"]] = 		"Scholomance",		-- MoP
+	[BZ["Townlong Steppes"]] = 		"SiegeofNiuzaoTempleA",	-- MoP
+	[BZ["Vale of Eternal Blossoms"]] = 	"SiegeofOrgrimmarA",	-- MoP
+	[BZ["The Jade Forest"]] = 		"TempleOfTheJadeSerpent",	-- MoP
+	[BZ["The Veiled Stair"]] = 		"TerraceofEndlessSpring",	-- MoP
+	[BZ["Isle of Thunder"]] = 		"ThroneofThunderA",	-- MoP
+	[BZ["Valley of the Four Winds"]] = 	"StormstoutBrewery",
+}
+
+-- Yes, the following two tables are redundant, but they're both here in case there's ever more than one entrance map for an instance
+-- Entrance maps to instance maps
+db.EntToInstMatches = {
+	["ScarletMonasteryEnt"] =		{"ScarletHalls","ScarletMonastery"},
+}
+
+-- Instance maps to entrance maps
+db.InstToEntMatches = {
+	["ScarletHalls"] =			{"ScarletMonasteryEnt"},
+	["ScarletMonastery"] =			{"ScarletMonasteryEnt"},
+}
+
+-- Defines the instance which have multiple maps
+-- Added only when the Entrance map is not available, for example, Ulduar do have entrance map, so no need to add it here
+db.MapSeries = {
+	["ShadoPanMonasteryA"] = 		{"ShadoPanMonasteryA", "ShadoPanMonasteryB" },
+	["ShadoPanMonasteryB"] = 		{"ShadoPanMonasteryA", "ShadoPanMonasteryB" },
+	["SiegeofNiuzaoTempleA"] = 		{"SiegeofNiuzaoTempleA", "SiegeofNiuzaoTempleB" },
+	["SiegeofNiuzaoTempleB"] = 		{"SiegeofNiuzaoTempleA", "SiegeofNiuzaoTempleB" },
+	["SiegeofOrgrimmarA"] = 		{"SiegeofOrgrimmarA", "SiegeofOrgrimmarB", "SiegeofOrgrimmarC", "SiegeofOrgrimmarD" },
+	["SiegeofOrgrimmarB"] = 		{"SiegeofOrgrimmarA", "SiegeofOrgrimmarB", "SiegeofOrgrimmarC", "SiegeofOrgrimmarD" },
+	["SiegeofOrgrimmarC"] = 		{"SiegeofOrgrimmarA", "SiegeofOrgrimmarB", "SiegeofOrgrimmarC", "SiegeofOrgrimmarD" },
+	["SiegeofOrgrimmarD"] = 		{"SiegeofOrgrimmarA", "SiegeofOrgrimmarB", "SiegeofOrgrimmarC", "SiegeofOrgrimmarD" },
+	["ThroneofThunderA"] = 			{"ThroneofThunderA", "ThroneofThunderB", "ThroneofThunderC", "ThroneofThunderD" },
+	["ThroneofThunderB"] = 			{"ThroneofThunderA", "ThroneofThunderB", "ThroneofThunderC", "ThroneofThunderD" },
+	["ThroneofThunderC"] = 			{"ThroneofThunderA", "ThroneofThunderB", "ThroneofThunderC", "ThroneofThunderD" },
+	["ThroneofThunderD"] = 			{"ThroneofThunderA", "ThroneofThunderB", "ThroneofThunderC", "ThroneofThunderD" },
+}
+
+-- Links maps together that are part of the same instance
+db.SubZoneAssoc = {
+	["ShadoPanMonasteryA"] =		BZ["Shado-Pan Monastery"],
+	["ShadoPanMonasteryB"] =		BZ["Shado-Pan Monastery"],
+	["SiegeofNiuzaoTempleA"] =		BZ["Siege of Niuzao Temple"],
+	["SiegeofNiuzaoTempleB"] =		BZ["Siege of Niuzao Temple"],
+	["SiegeofOrgrimmarA"] =			BZ["Siege of Orgrimmar"],
+	["SiegeofOrgrimmarB"] =			BZ["Siege of Orgrimmar"],
+	["SiegeofOrgrimmarC"] =			BZ["Siege of Orgrimmar"],
+	["SiegeofOrgrimmarD"] =			BZ["Siege of Orgrimmar"],
+	["ThroneofThunderA"] =			BZ["Throne of Thunder"],
+	["ThroneofThunderB"] =			BZ["Throne of Thunder"],
+	["ThroneofThunderC"] =			BZ["Throne of Thunder"],
+	["ThroneofThunderD"] =			BZ["Throne of Thunder"],
+}
+
+db.DropDownLayouts_Order = {
+	[ATLAS_DDL_CONTINENT] = {
+		ATLAS_DDL_CONTINENT_EASTERN,
+		ATLAS_DDL_CONTINENT_PANDARIA,
+	},
+	[ATLAS_DDL_LEVEL] = {
+		ATLAS_DDL_LEVEL_85TO90,
+		ATLAS_DDL_LEVEL_90TO100,
+	},
+	[ATLAS_DDL_EXPANSION] = {
+		ATLAS_DDL_EXPANSION_MOP,
+	},
+}
+
+db.DropDownLayouts = {
+	[ATLAS_DDL_CONTINENT] = {
+		[ATLAS_DDL_CONTINENT_EASTERN] = {
+			"Scholomance",			-- Mop, Classic WoW
+			"ScarletMonasteryEnt",		-- Mop, Classic WoW
+			"ScarletHalls",			-- Mop, Classic WoW
+			"ScarletMonastery",		-- Mop, Classic WoW
+		},
+		[ATLAS_DDL_CONTINENT_PANDARIA] = {
+			"GateoftheSettingSun",
+			"HeartofFear",
+			"MoguShanPalace",
+			"MoguShanVaults",
+			"ShadoPanMonasteryA",
+			"ShadoPanMonasteryB",
+			"SiegeofNiuzaoTempleA",
+			"SiegeofNiuzaoTempleB",
+			"SiegeofOrgrimmarA",
+			"SiegeofOrgrimmarB",
+			"SiegeofOrgrimmarC",
+			"SiegeofOrgrimmarD",
+			"StormstoutBrewery",
+			"TempleOfTheJadeSerpent",
+			"TerraceofEndlessSpring",
+			"ThroneofThunderA",
+			"ThroneofThunderB",
+			"ThroneofThunderC",
+			"ThroneofThunderD",
+		},
+	},
+	[ATLAS_DDL_EXPANSION] = {
+		[ATLAS_DDL_EXPANSION_MOP] = {
+			"GateoftheSettingSun",
+			"HeartofFear",
+			"MoguShanPalace",
+			"MoguShanVaults",
+			"ScarletMonasteryEnt",
+			"ScarletHalls",
+			"ScarletMonastery",
+			"Scholomance",
+			"ShadoPanMonasteryA",
+			"ShadoPanMonasteryB",
+			"SiegeofNiuzaoTempleA",
+			"SiegeofNiuzaoTempleB",
+			"SiegeofOrgrimmarA",
+			"SiegeofOrgrimmarB",
+			"SiegeofOrgrimmarC",
+			"SiegeofOrgrimmarD",
+			"StormstoutBrewery",
+			"TempleOfTheJadeSerpent",
+			"TerraceofEndlessSpring",
+			"ThroneofThunderA",
+			"ThroneofThunderB",
+			"ThroneofThunderC",
+			"ThroneofThunderD",
+		},
+	},
+	[ATLAS_DDL_LEVEL] = {
+		[ATLAS_DDL_LEVEL_85TO90] = {
+			"GateoftheSettingSun",		-- MoP
+			"MoguShanPalace",		-- MoP
+			"ShadoPanMonasteryA",		-- MoP
+			"ShadoPanMonasteryB",		-- MoP
+			"StormstoutBrewery",		-- MoP
+			"TempleOfTheJadeSerpent",	-- MoP
+		},
+		[ATLAS_DDL_LEVEL_90TO100] = {
+			"Scholomance",			-- MoP
+			"ScarletMonasteryEnt",		-- MoP
+			"ScarletHalls",			-- MoP
+			"ScarletMonastery",		-- MoP
+			"HeartofFear",			-- MoP
+			"MoguShanVaults",		-- MoP
+			"SiegeofNiuzaoTempleA",		-- MoP
+			"SiegeofNiuzaoTempleB",		-- MoP
+			"SiegeofOrgrimmarA",		-- MoP
+			"SiegeofOrgrimmarB",		-- MoP
+			"SiegeofOrgrimmarC",		-- MoP
+			"SiegeofOrgrimmarD",		-- MoP
+			"TerraceofEndlessSpring",	-- MoP
+			"ThroneofThunderA",		-- MoP
+			"ThroneofThunderB",		-- MoP
+			"ThroneofThunderC",		-- MoP
+			"ThroneofThunderD",		-- MoP
+		},
+	},
+	[ATLAS_DDL_PARTYSIZE] = {
+		[ATLAS_DDL_PARTYSIZE_5] = {
+			"GateoftheSettingSun",		-- MoP
+			"MoguShanPalace",		-- MoP
+			"ShadoPanMonasteryA",		-- MoP
+			"ScarletHalls",			-- MoP
+			"ScarletMonastery",		-- MoP
+			"ScarletMonasteryEnt",		-- MoP
+			"Scholomance",			-- MoP
+			"ShadoPanMonasteryB",		-- MoP
+			"StormstoutBrewery",		-- MoP
+		},
+		[ATLAS_DDL_PARTYSIZE_10] = {
+			"HeartofFear",			-- MoP
+			"MoguShanVaults",		-- MoP
+			"SiegeofOrgrimmarA",		-- MoP
+			"SiegeofOrgrimmarB",		-- MoP
+			"SiegeofOrgrimmarC",		-- MoP
+			"SiegeofOrgrimmarD",		-- MoP
+			"TerraceofEndlessSpring",	-- MoP
+			"ThroneofThunderA",		-- MoP
+			"ThroneofThunderB",		-- MoP
+			"ThroneofThunderC",		-- MoP
+			"ThroneofThunderD",		-- MoP
+		},
+		[ATLAS_DDL_PARTYSIZE_20TO40] = {
+			"HeartofFear",			-- MoP
+			"MoguShanVaults",		-- MoP
+			"SiegeofOrgrimmarA",		-- MoP
+			"SiegeofOrgrimmarB",		-- MoP
+			"SiegeofOrgrimmarC",		-- MoP
+			"SiegeofOrgrimmarD",		-- MoP
+			"TerraceofEndlessSpring",	-- MoP
+			"ThroneofThunderA",		-- MoP
+			"ThroneofThunderB",		-- MoP
+			"ThroneofThunderC",		-- MoP
+			"ThroneofThunderD",		-- MoP
+		},
+	},
+	[ATLAS_DDL_TYPE] = {
+		[ATLAS_DDL_TYPE_INSTANCE] = {
+			"GateoftheSettingSun",		-- MoP
+			"HeartofFear",			-- MoP
+			"MoguShanPalace",		-- MoP
+			"MoguShanVaults",		-- MoP
+			"ScarletHalls",			-- MoP
+			"ScarletMonastery",		-- MoP
+			"Scholomance",			-- MoP
+			"ShadoPanMonasteryA",		-- MoP
+			"ShadoPanMonasteryB",		-- MoP
+			"SiegeofNiuzaoTempleA",		-- MoP
+			"SiegeofNiuzaoTempleB",		-- MoP
+			"SiegeofOrgrimmarA",		-- MoP
+			"SiegeofOrgrimmarB",		-- MoP
+			"SiegeofOrgrimmarC",		-- MoP
+			"SiegeofOrgrimmarD",		-- MoP
+			"StormstoutBrewery",		-- MoP
+			"TempleOfTheJadeSerpent",	-- MoP
+			"TerraceofEndlessSpring",	-- MoP
+			"ThroneofThunderA",		-- MoP
+			"ThroneofThunderB",		-- MoP
+			"ThroneofThunderC",		-- MoP
+			"ThroneofThunderD",		-- MoP
+		},
+		[ATLAS_DDL_TYPE_ENTRANCE] = {
+			"ScarletMonasteryEnt",		-- MoP
+		},
+	},
+}
