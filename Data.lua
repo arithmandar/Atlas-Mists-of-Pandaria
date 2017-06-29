@@ -1437,6 +1437,7 @@ db.DropDownLayouts = {
 			"Scholomance",			-- MoP
 			"ShadoPanMonasteryB",		-- MoP
 			"StormstoutBrewery",		-- MoP
+			"TempleOfTheJadeSerpent",	-- MoP
 		},
 		[ATLAS_DDL_PARTYSIZE_10] = {
 			"HeartofFear",			-- MoP
