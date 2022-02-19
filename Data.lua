@@ -1336,8 +1336,7 @@ db.DropDownLayouts_Order = {
 		ATLAS_DDL_CONTINENT_PANDARIA,
 	},
 	[ATLAS_DDL_LEVEL] = {
-		ATLAS_DDL_LEVEL_85TO90,
-		ATLAS_DDL_LEVEL_90TO100,
+		ATLAS_DDL_LEVEL_30TO35,
 	},
 	[ATLAS_DDL_EXPANSION] = {
 		ATLAS_DDL_EXPANSION_MOP,
@@ -1402,15 +1401,13 @@ db.DropDownLayouts = {
 		},
 	},
 	[ATLAS_DDL_LEVEL] = {
-		[ATLAS_DDL_LEVEL_85TO90] = {
+		[ATLAS_DDL_LEVEL_30TO35] = {
 			"GateoftheSettingSun",		-- MoP
 			"MoguShanPalace",		-- MoP
 			"ShadoPanMonasteryA",		-- MoP
 			"ShadoPanMonasteryB",		-- MoP
 			"StormstoutBrewery",		-- MoP
 			"TempleOfTheJadeSerpent",	-- MoP
-		},
-		[ATLAS_DDL_LEVEL_90TO100] = {
 			"Scholomance",			-- MoP
 			"ScarletMonasteryEnt",		-- MoP
 			"ScarletHalls",			-- MoP
