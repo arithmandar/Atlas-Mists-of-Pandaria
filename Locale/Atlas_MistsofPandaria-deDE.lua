@@ -4,7 +4,7 @@
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 	Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
-	Copyright 2011 ~ 2023 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
+	Copyright 2011 ~ 2026 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
 
 	This file is part of Atlas.
 
@@ -28,8 +28,6 @@ local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
 local L = AceLocale:NewLocale("Atlas_MistsofPandaria", "deDE", false);
 
 if L then
---@localization(locale="deDE", format="lua_additive_table")@
---@do-not-package@
 
 --************************************************
 -- Zone Names, Acronyms, and Common Strings
@@ -111,7 +109,5 @@ if L then
 	L["Archritualist Kelada"] = "Erzritualist Kelada";
 	L["Flesh'rok the Diseased <Primordial Saurok Horror>"] = "Fleisch'rok der Verpestete <Urzeitlicher Saurokschrecken>";
 	L["Zao'cho <The Emperor's Shield>"] = "Zao'cho <Der Schild des Kaisers>";
-
---@end-do-not-package@
 
 end

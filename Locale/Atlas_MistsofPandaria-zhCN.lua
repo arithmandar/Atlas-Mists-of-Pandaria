@@ -4,7 +4,7 @@
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 	Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
-	Copyright 2011 ~ 2023 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
+	Copyright 2011 ~ 2026 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
 
 	This file is part of Atlas.
 
@@ -31,16 +31,18 @@ local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
 local L = AceLocale:NewLocale("Atlas_MistsofPandaria", "zhCN", false);
 
 if L then
---@localization(locale="zhCN", format="lua_additive_table")@
 
 --************************************************
 -- Zone Names, Acronyms, and Common Strings
 --************************************************
 	--MoP Acronyms
 	L["GSS"] = "GSS"; --Gate of the Setting Sun
+	L["Halls"] = "Halls"; -- Scarlet Halls
 	L["HoF"] = "HoF"; --Heart of Fear
 	L["MP"] = "MP"; --Mogu'shan Palace
 	L["MV"] = "MV"; --Mogu'shan Vaults
+	L["SM"] = "SM"; -- Scarlet Monastery
+	L["Scholo"] = "Scholo"; -- Scholomance
 	L["SPM"] = "SPM"; --Shado-Pan Monastery
 	L["SNT"] = "SNT"; --Siege of Niuzao Temple
 	L["SB"] = "SB"; --Stormstout Brewery
@@ -108,5 +110,4 @@ if L then
 	L["Archritualist Kelada"] = "大祭师克拉达";
 	L["Flesh'rok the Diseased <Primordial Saurok Horror>"] = "感染者弗赖什鲁克 <源生蜥蜴恐魔>";
 	L["Zao'cho <The Emperor's Shield>"] = "曹卓 <皇帝之盾>";
---@end-do-not-package@
 end
