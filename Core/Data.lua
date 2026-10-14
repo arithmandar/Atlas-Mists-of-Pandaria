@@ -1,8 +1,7 @@
--- $Id$
 --[[
 
 	Atlas, a World of Warcraft instance map browser
-	Copyright 2011 ~ 2026 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
+	Copyright 2011 ~ 2026 - Arith Hsu, Atlas Team 
 
 	This file is part of Atlas.
 
@@ -26,58 +25,85 @@
 -----------------------------------------------------------------------
 -- Functions
 local _G = getfenv(0)
-local pairs = _G.pairs
--- Libraries
--- ----------------------------------------------------------------------------
--- AddOn namespace.
--- ----------------------------------------------------------------------------
-local FOLDER_NAME, private = ...
+
+local _, private = ...
 local LibStub = _G.LibStub
 local BZ = Atlas_GetLocaleLibBabble("LibBabble-SubZone-3.0")
 local BF = Atlas_GetLocaleLibBabble("LibBabble-Faction-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 local ALC = LibStub("AceLocale-3.0"):GetLocale("Atlas")
+---@type AtlasAddon
 local Atlas = LibStub("AceAddon-3.0"):GetAddon("Atlas")
-local MoP = Atlas:GetModule(private.module_name)
+---@type AtlasDataModule
+local addon = Atlas:GetModule(private.module_name)
 
 local db = {}
-MoP.db = db
+addon.db = db
 
-local function Atlas_GetBossName(bossname, encounterID, creatureIndex)
+local constants = Atlas.constants
+local labelcolors = constants.colors.labels
+local BLUE = labelcolors.BLUE
+local GREN = labelcolors.GREN
+local GREY = labelcolors.GREY
+local LBLU = labelcolors.LBLU
+local _RED = labelcolors._RED
+local ORNG = labelcolors.ORNG
+local PINK = labelcolors.PINK
+local PURP = labelcolors.PURP
+local WHIT = labelcolors.WHIT
+local YLOW = labelcolors.YLOW
+local INDENT = labelcolors.INDENT
+
+-- local helper functions
+local function getBossName(bossname, encounterID, creatureIndex)
 	return Atlas:GetBossName(bossname, encounterID, creatureIndex, private.module_name)
 end
 
-local BLUE = "|cff6666ff"
-local GREN = "|cff66cc33"
-local GREY = "|cff999999"
-local LBLU = "|cff33cccc"
-local _RED = "|cffcc3333"
-local ORNG = "|cffcc9933"
-local PINK = "|ccfcc33cc"
-local PURP = "|cff9900ff"
-local WHIT = "|cffffffff"
-local YLOW = "|cffcccc33"
-local INDENT = "      "
+local function getCreatureName(creatureName, creatureID)
+	return Atlas:GetCreatureName(creatureName, creatureID)
+end
+
+local function getQuestTitlebyID(title, id)
+	return Atlas:GetQuestTitlebyID(title, id)
+end
+
+local function getItemTitlebyID(title, id)
+	return Atlas:GetItemTitlebyID(title, id)
+end
+
+-- local constants for easier access
+local SLASH = ALC["Slash"]
+local COLON = ALC["Colon"]
+local COMMA = ALC["Comma"]
+local L_PAREN = ALC["L-Parenthesis"]
+local R_PAREN = ALC["R-Parenthesis"]
+local ENTRANCE = ALC["Entrance"]
+local WANDERS = ALC["Wanders"]
+local UPPER = ALC["Upper"]
+local CONNECTION = ALC["Connection"]
+local RARE = ALC["Rare"]
+local RANDOM = ALC["Random"]
+local HYPHEN = ALC["Hyphen"]
 
 db.AtlasMaps = {
 	GateoftheSettingSun = {
 		ZoneName = { BZ["Gate of the Setting Sun"] },
-		Location = { BZ["Dread Wastes"]..ALC["Slash"]..BZ["Vale of Eternal Blossoms"] },
+		Location = { BZ["Dread Wastes"]..SLASH..BZ["Vale of Eternal Blossoms"] },
 		DungeonID = 631,
 		DungeonHeroicID = 471, -- yes, it's weird that heroic ID is smaller than normal dungeon ID
 		Acronym = L["GSS"],
 		WorldMapID = 437,
 		JournalInstanceID = 303,
 		Module = "Atlas_MistsofPandaria",
-		{ BLUE.." A) "..ALC["Entrance"], 10001 },
+		{ BLUE.." A) "..ENTRANCE, 10001 },
 		{ GREN..INDENT..L["Bowmistress Li <Guard Captain>"] },
 		{ BLUE.." B) "..ALC["Exit"], 10002 },
-		{ WHIT.." 1) "..Atlas_GetBossName("Saboteur Kip'tilak", 655), 655 },
-		{ WHIT.." 2) "..Atlas_GetBossName("Striker Ga'dok", 675)..ALC["L-Parenthesis"]..ALC["Upper"]..ALC["R-Parenthesis"], 675 },
-		{ WHIT.." 3) "..Atlas_GetBossName("Commander Ri'mok", 676), 676 },
-		{ WHIT.." 4) "..Atlas_GetBossName("Raigonn", 649), 649 },
+		{ WHIT.." 1) "..getBossName("Saboteur Kip'tilak", 655), 655 },
+		{ WHIT.." 2) "..getBossName("Striker Ga'dok", 675)..L_PAREN..UPPER..R_PAREN, 675 },
+		{ WHIT.." 3) "..getBossName("Commander Ri'mok", 676), 676 },
+		{ WHIT.." 4) "..getBossName("Raigonn", 649), 649 },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
+		{ LBLU..ACHIEVEMENTS..COLON },
 		{ "Bomberman", "ac=6479" },
 		{ "Conscriptinator", "ac=6476" },
 		{ "Mantid Swarm", "ac=6945" },
@@ -99,17 +125,17 @@ db.AtlasMaps = {
 		WorldMapID = 474,
 		JournalInstanceID = 330,
 		Module = "Atlas_MistsofPandaria",
-		{ BLUE.." A) "..ALC["Entrance"], 10001 },
-		{ BLUE.." B) "..ALC["Connection"], 10002 },
-		{ WHIT.." 1) "..Atlas_GetBossName("Imperial Vizier Zor'lok", 745), 745 },
-		{ WHIT.." 2) "..Atlas_GetBossName("Blade Lord Ta'yak", 744), 744 },
-		{ WHIT.." 3) "..Atlas_GetBossName("Garalon", 713), 713 },
-		{ WHIT.." 4) "..Atlas_GetBossName("Wind Lord Mel'jarak", 741), 741 },
-		{ WHIT.." 5) "..Atlas_GetBossName("Amber-Shaper Un'sok", 737), 737 },
-		{ WHIT..INDENT..Atlas_GetBossName("Amber Monstrosity", 737, 2), 737 },
-		{ WHIT.." 6) "..Atlas_GetBossName("Grand Empress Shek'zeer", 743), 743 },
+		{ BLUE.." A) "..ENTRANCE, 10001 },
+		{ BLUE.." B) "..CONNECTION, 10002 },
+		{ WHIT.." 1) "..getBossName("Imperial Vizier Zor'lok", 745), 745 },
+		{ WHIT.." 2) "..getBossName("Blade Lord Ta'yak", 744), 744 },
+		{ WHIT.." 3) "..getBossName("Garalon", 713), 713 },
+		{ WHIT.." 4) "..getBossName("Wind Lord Mel'jarak", 741), 741 },
+		{ WHIT.." 5) "..getBossName("Amber-Shaper Un'sok", 737), 737 },
+		{ WHIT..INDENT..getBossName("Amber Monstrosity", 737, 2), 737 },
+		{ WHIT.." 6) "..getBossName("Grand Empress Shek'zeer", 743), 743 },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
+		{ LBLU..ACHIEVEMENTS..COLON },
 		{ "Overzealous", "ac=6937" },
 		{ "Candle in the Wind", "ac=6936" },
 		{ "Like an Arrow to the Face", "ac=6553" },
@@ -139,17 +165,17 @@ db.AtlasMaps = {
 		WorldMapID = 453,
 		JournalInstanceID = 321,
 		Module = "Atlas_MistsofPandaria",
-		{ BLUE.." A) "..ALC["Entrance"], 10001 },
-		{ BLUE.." B-C) "..ALC["Connection"], 10002 },
-		{ WHIT.." 1) "..Atlas_GetBossName("Trial of the King", 708), 708 },
-		{ WHIT..INDENT..Atlas_GetBossName("Haiyan the Unstoppable", 708, 3), 708 },
-		{ WHIT..INDENT..Atlas_GetBossName("Kuai the Brute", 708, 1), 708 },
-		{ WHIT..INDENT..Atlas_GetBossName("Ming the Cunning", 708, 2), 708 },
-		{ WHIT.." 2) "..Atlas_GetBossName("Gekkan", 690), 690 },
-		{ WHIT.." 3) "..Atlas_GetBossName("Xin the Weaponmaster", 698), 698 },
+		{ BLUE.." A) "..ENTRANCE, 10001 },
+		{ BLUE.." B-C) "..CONNECTION, 10002 },
+		{ WHIT.." 1) "..getBossName("Trial of the King", 708), 708 },
+		{ WHIT..INDENT..getBossName("Haiyan the Unstoppable", 708, 3), 708 },
+		{ WHIT..INDENT..getBossName("Kuai the Brute", 708, 1), 708 },
+		{ WHIT..INDENT..getBossName("Ming the Cunning", 708, 2), 708 },
+		{ WHIT.." 2) "..getBossName("Gekkan", 690), 690 },
+		{ WHIT.." 3) "..getBossName("Xin the Weaponmaster", 698), 698 },
 		{ GREN.." 1') "..L["Sinan the Dreamer"], 10003 },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
+		{ LBLU..ACHIEVEMENTS..COLON },
 		{ "Glintrok N' Roll", "ac=6478" },
 		{ "What Does This Button Do?", "ac=6736" },
 		{ "Quarrelsome Quilen Quintet", "ac=6713" },
@@ -171,26 +197,26 @@ db.AtlasMaps = {
 		WorldMapID = 456,
 		JournalInstanceID = 317,
 		Module = "Atlas_MistsofPandaria",
-		{ BLUE.." A) "..ALC["Entrance"], 10001 },
-		{ BLUE.." B) "..ALC["Connection"], 10002 },
-		{ WHIT.." 1) "..Atlas_GetBossName("The Stone Guard", 679), 679 },
-		{ WHIT..INDENT..Atlas_GetBossName("Amethyst Guardian", 679, 1), 679 },
-		{ WHIT..INDENT..Atlas_GetBossName("Cobalt Guardian", 679, 2), 679 },
-		{ WHIT..INDENT..Atlas_GetBossName("Jade Guardian", 679, 3), 679 },
-		{ WHIT..INDENT..Atlas_GetBossName("Jasper Guardian", 679, 4), 679 },
-		{ WHIT.." 2) "..Atlas_GetBossName("Feng the Accursed", 689), 689 },
-		{ WHIT.." 3) "..Atlas_GetBossName("Gara'jal the Spiritbinder", 682), 682 },
-		{ WHIT.." 4) "..Atlas_GetBossName("The Spirit Kings", 687), 687 },
-		{ WHIT..INDENT..Atlas_GetBossName("Meng the Demented", 687, 1), 687 },
-		{ WHIT..INDENT..Atlas_GetBossName("Qiang the Merciless", 687, 2), 687 },
-		{ WHIT..INDENT..Atlas_GetBossName("Subetai the Swift", 687, 3), 687 },
-		{ WHIT..INDENT..Atlas_GetBossName("Zian of the Endless Shadow", 687, 4), 687 },
-		{ WHIT.." 5) "..Atlas_GetBossName("Elegon", 726), 726 },
-		{ WHIT.." 6) "..Atlas_GetBossName("Will of the Emperor", 677), 677 },
-		{ WHIT..INDENT..Atlas_GetBossName("Jan-xi", 677, 1), 677 },
-		{ WHIT..INDENT..Atlas_GetBossName("Qin-xi", 677, 2), 677 },
+		{ BLUE.." A) "..ENTRANCE, 10001 },
+		{ BLUE.." B) "..CONNECTION, 10002 },
+		{ WHIT.." 1) "..getBossName("The Stone Guard", 679), 679 },
+		{ WHIT..INDENT..getBossName("Amethyst Guardian", 679, 1), 679 },
+		{ WHIT..INDENT..getBossName("Cobalt Guardian", 679, 2), 679 },
+		{ WHIT..INDENT..getBossName("Jade Guardian", 679, 3), 679 },
+		{ WHIT..INDENT..getBossName("Jasper Guardian", 679, 4), 679 },
+		{ WHIT.." 2) "..getBossName("Feng the Accursed", 689), 689 },
+		{ WHIT.." 3) "..getBossName("Gara'jal the Spiritbinder", 682), 682 },
+		{ WHIT.." 4) "..getBossName("The Spirit Kings", 687), 687 },
+		{ WHIT..INDENT..getBossName("Meng the Demented", 687, 1), 687 },
+		{ WHIT..INDENT..getBossName("Qiang the Merciless", 687, 2), 687 },
+		{ WHIT..INDENT..getBossName("Subetai the Swift", 687, 3), 687 },
+		{ WHIT..INDENT..getBossName("Zian of the Endless Shadow", 687, 4), 687 },
+		{ WHIT.." 5) "..getBossName("Elegon", 726), 726 },
+		{ WHIT.." 6) "..getBossName("Will of the Emperor", 677), 677 },
+		{ WHIT..INDENT..getBossName("Jan-xi", 677, 1), 677 },
+		{ WHIT..INDENT..getBossName("Qin-xi", 677, 2), 677 },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
+		{ LBLU..ACHIEVEMENTS..COLON },
 		{ "Must Love Dogs", "ac=6823" },
 		{ "Anything You Can Do, I Can Do Better...", "ac=6674" },
 		{ "Sorry, Were You Looking for This?", "ac=7056" },
@@ -211,8 +237,9 @@ db.AtlasMaps = {
 		{ "Ahead of the Curve: Will of the Emperor", "ac=6954" },
 		{ "Cutting Edge: Will of the Emperor", "ac=7485" },
 	},
+	--[[
 	ScarletMonasteryEnt = {
-		ZoneName = { BZ["Scarlet Monastery"]..ALC["L-Parenthesis"]..ALC["Entrance"]..ALC["R-Parenthesis"] },
+		ZoneName = { BZ["Scarlet Monastery"]..L_PAREN..ENTRANCE..R_PAREN },
 		Location = { BZ["Tirisfal Glades"] },
 		LevelRange = "28-40 / 90",
 		MinLevel = "26",
@@ -221,14 +248,14 @@ db.AtlasMaps = {
 		Module = "Atlas_MistsofPandaria",
 		PrevMap = "ScarletMonastery",
 		NextMap = "ScarletHalls",
-		{ BLUE.." A) "..ALC["Entrance"], 10001 },
+		{ BLUE.." A) "..ENTRANCE, 10001 },
 		{ BLUE.." B) "..BZ["Scarlet Monastery"], 10002 },
 		{ BLUE.." C) "..BZ["Scarlet Halls"], 10003 },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
+		{ LBLU..ACHIEVEMENTS..COLON },
 	},
 	ScarletHalls = {
-		ZoneName = { BZ["Scarlet Monastery"]..ALC["Colon"]..BZ["Scarlet Halls"] },
+		ZoneName = { BZ["Scarlet Monastery"]..COLON..BZ["Scarlet Halls"] },
 		Location = { BZ["Tirisfal Glades"] },
 		DungeonID = 163,
 		DungeonHeroicID = 473,
@@ -238,20 +265,20 @@ db.AtlasMaps = {
 		Module = "Atlas_MistsofPandaria",
 		PrevMap = "ScarletMonasteryEnt",
 		NextMap = "ScarletMonastery",
-		{ BLUE.." A) "..ALC["Entrance"], 10001 },
+		{ BLUE.." A) "..ENTRANCE, 10001 },
 		{ WHIT.." 1) "..L["Commander Lindon"], 10002 },
-		{ WHIT.." 2) "..Atlas_GetBossName("Houndmaster Braun", 660), 660 },
-		{ WHIT.." 3) "..Atlas_GetBossName("Armsmaster Harlan", 654), 654 },
-		{ WHIT.." 4) "..Atlas_GetBossName("Flameweaver Koegler", 656), 656 },
+		{ WHIT.." 2) "..getBossName("Houndmaster Braun", 660), 660 },
+		{ WHIT.." 3) "..getBossName("Armsmaster Harlan", 654), 654 },
+		{ WHIT.." 4) "..getBossName("Flameweaver Koegler", 656), 656 },
 		{ GREN.." 1') "..L["Hooded Crusader"], 10003 },
 		{ INDENT..GREN..L["Bucket of Meaty Dog Food"] },
 		{ GREN.." 2') "..L["Reinforced Archery Target"], 10004 },
 		{ GREN.." 3') "..L["Bucket of Meaty Dog Food"], 10005 },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
+		{ LBLU..ACHIEVEMENTS..COLON },
 	},
 	ScarletMonastery = {
-		ZoneName = { BZ["Scarlet Monastery"]..ALC["Colon"]..BZ["Scarlet Monastery"] },
+		ZoneName = { BZ["Scarlet Monastery"]..COLON..BZ["Scarlet Monastery"] },
 		Location = { BZ["Tirisfal Glades"] },
 		DungeonID = 164,
 		DungeonHeroicID = 474,
@@ -261,15 +288,15 @@ db.AtlasMaps = {
 		Module = "Atlas_MistsofPandaria",
 		PrevMap = "ScarletHalls",
 		NextMap = "ScarletMonasteryEnt",
-		{ BLUE.." A) "..ALC["Entrance"], 10001 },
+		{ BLUE.." A) "..ENTRANCE, 10001 },
 		{ GREN.." 1') "..L["Hooded Crusader"], 10002 },
-		{ WHIT.." 1) "..Atlas_GetBossName("Thalnos the Soulrender", 688), 688 },
-		{ WHIT.." 2) "..Atlas_GetBossName("Brother Korloff", 671), 671 },
-		{ WHIT.." 3) "..Atlas_GetBossName("High Inquisitor Whitemane", 674), 674 },
-		{ WHIT..INDENT..Atlas_GetBossName("Commander Durand", 674, 2), 674 },
-		{ ORNG.." 1) "..Atlas_GetBossName("Headless Horseman")..ALC["L-Parenthesis"]..ALC["Hallow's End"]..ALC["R-Parenthesis"], 10003 },
+		{ WHIT.." 1) "..getBossName("Thalnos the Soulrender", 688), 688 },
+		{ WHIT.." 2) "..getBossName("Brother Korloff", 671), 671 },
+		{ WHIT.." 3) "..getBossName("High Inquisitor Whitemane", 674), 674 },
+		{ WHIT..INDENT..getBossName("Commander Durand", 674, 2), 674 },
+		{ ORNG.." 1) "..getBossName("Headless Horseman")..L_PAREN..ALC["Hallow's End"]..R_PAREN, 10003 },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
+		{ LBLU..ACHIEVEMENTS..COLON },
 	},
 	Scholomance = {
 		ZoneName = { BZ["Scholomance"] },
@@ -280,16 +307,16 @@ db.AtlasMaps = {
 		WorldMapID = 476,
 		JournalInstanceID = 246,
 		Module = "Atlas_MistsofPandaria",
-		{ BLUE.." A) "..ALC["Entrance"], 10001 },
-		{ BLUE.." B-D) "..ALC["Connection"], 10002 },
-		{ WHIT.." 1) "..Atlas_GetBossName("Instructor Chillheart", 659), 659 },
+		{ BLUE.." A) "..ENTRANCE, 10001 },
+		{ BLUE.." B-D) "..CONNECTION, 10002 },
+		{ WHIT.." 1) "..getBossName("Instructor Chillheart", 659), 659 },
 		{ WHIT..INDENT..L["Instructor Chillheart's Phylactery"] },
-		{ WHIT.." 2) "..Atlas_GetBossName("Jandice Barov", 663), 663 },
-		{ WHIT.." 3) "..Atlas_GetBossName("Rattlegore", 665), 665 },
-		{ WHIT.." 4) "..Atlas_GetBossName("Lilian Voss", 666), 666 },
+		{ WHIT.." 2) "..getBossName("Jandice Barov", 663), 663 },
+		{ WHIT.." 3) "..getBossName("Rattlegore", 665), 665 },
+		{ WHIT.." 4) "..getBossName("Lilian Voss", 666), 666 },
 		{ WHIT.." 5) "..L["Professor Slate"], 10003 },
 		{ GREN..INDENT..L["Polyformic Acid Potion"] },
-		{ WHIT.." 6) "..Atlas_GetBossName("Darkmaster Gandling", 684), 684 },
+		{ WHIT.." 6) "..getBossName("Darkmaster Gandling", 684), 684 },
 		{ GREN.." 1') "..L["Talking Skull"], 10004 },
 		{ GREN.." 2') "..L["In the Shadow of the Light"], 10005 },
 		{ GREN.." 3') "..L["Kel'Thuzad's Deep Knowledge"], 10006 },
@@ -297,8 +324,8 @@ db.AtlasMaps = {
 		{ GREN.." 5') "..L["Coffer of Forgotten Souls"], 10008 },
 		{ GREN.." 6') "..L["The Dark Grimoire"], 10009 },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
-	},
+		{ LBLU..ACHIEVEMENTS..COLON },
+	},]]
 	ShadoPanMonasteryA = {
 		ZoneName = { BZ["Shado-Pan Monastery"]..ALC["MapA"] },
 		Location = { BZ["Kun-Lai Summit"] },
@@ -310,12 +337,12 @@ db.AtlasMaps = {
 		JournalInstanceID = 312,
 		Module = "Atlas_MistsofPandaria",
 		NextMap = "ShadoPanMonasteryB",
-		{ BLUE.." B-H) "..ALC["Connection"], 10001 },
-		{ WHIT.." 1) "..Atlas_GetBossName("Gu Cloudstrike", 673), 673 },
-		{ WHIT..INDENT..Atlas_GetBossName("Azure Serpent", 673, 2), 673 },
-		{ WHIT.." 4) "..Atlas_GetBossName("Taran Zhu", 686), 686 },
+		{ BLUE.." B-H) "..CONNECTION, 10001 },
+		{ WHIT.." 1) "..getBossName("Gu Cloudstrike", 673), 673 },
+		{ WHIT..INDENT..getBossName("Azure Serpent", 673, 2), 673 },
+		{ WHIT.." 4) "..getBossName("Taran Zhu", 686), 686 },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
+		{ LBLU..ACHIEVEMENTS..COLON },
 		{ "Respect", "ac=6477" },
 		{ "The Obvious Solution", "ac=6472" },
 		{ "Hate Leads to Suffering", "ac=6471" },
@@ -338,13 +365,13 @@ db.AtlasMaps = {
 		JournalInstanceID = 312,
 		Module = "Atlas_MistsofPandaria",
 		PrevMap = "ShadoPanMonasteryA",
-		{ BLUE.." A) "..ALC["Entrance"], 10001 },
-		{ BLUE.." B-H) "..ALC["Connection"], 10002 },
-		{ WHIT.." 2) "..Atlas_GetBossName("Master Snowdrift", 657), 657 },
-		{ WHIT.." 3) "..Atlas_GetBossName("Sha of Violence", 685), 685 },
+		{ BLUE.." A) "..ENTRANCE, 10001 },
+		{ BLUE.." B-H) "..CONNECTION, 10002 },
+		{ WHIT.." 2) "..getBossName("Master Snowdrift", 657), 657 },
+		{ WHIT.." 3) "..getBossName("Sha of Violence", 685), 685 },
 		{ GREN.." 1') "..L["Ban Bearheart"], 10003 },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
+		{ LBLU..ACHIEVEMENTS..COLON },
 		{ "Respect", "ac=6477" },
 		{ "The Obvious Solution", "ac=6472" },
 		{ "Hate Leads to Suffering", "ac=6471" },
@@ -367,12 +394,12 @@ db.AtlasMaps = {
 		JournalInstanceID = 324,
 		Module = "Atlas_MistsofPandaria",
 		NextMap = "SiegeofNiuzaoTempleB",
-		{ BLUE.." A) "..ALC["Entrance"], 10001 },
-		{ BLUE.." B-C) "..ALC["Connection"], 10002 },
-		{ WHIT.." 1) "..Atlas_GetBossName("Vizier Jin'bak", 693), 693 },
+		{ BLUE.." A) "..ENTRANCE, 10001 },
+		{ BLUE.." B-C) "..CONNECTION, 10002 },
+		{ WHIT.." 1) "..getBossName("Vizier Jin'bak", 693), 693 },
 		{ GREN.." 1') "..L["Shado-Master Chum Kiu"], 10003 },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
+		{ LBLU..ACHIEVEMENTS..COLON },
 		{ "Return to Sender", "ac=6485" },
 		{ "Run with the Wind", "ac=6822" },
 		{ "Where's My Air Support?", "ac=6688" },
@@ -395,12 +422,12 @@ db.AtlasMaps = {
 		JournalInstanceID = 324,
 		Module = "Atlas_MistsofPandaria",
 		PrevMap = "SiegeofNiuzaoTempleA",
-		{ BLUE.." C) "..ALC["Connection"], 10001 },
-		{ WHIT.." 2) "..Atlas_GetBossName("Commander Vo'jak", 738), 738 },
-		{ WHIT.." 3) "..Atlas_GetBossName("General Pa'valak", 692), 692 },
-		{ WHIT.." 4) "..Atlas_GetBossName("Wing Leader Ner'onok", 727), 727 },
+		{ BLUE.." C) "..CONNECTION, 10001 },
+		{ WHIT.." 2) "..getBossName("Commander Vo'jak", 738), 738 },
+		{ WHIT.." 3) "..getBossName("General Pa'valak", 692), 692 },
+		{ WHIT.." 4) "..getBossName("Wing Leader Ner'onok", 727), 727 },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
+		{ LBLU..ACHIEVEMENTS..COLON },
 		{ "Return to Sender", "ac=6485" },
 		{ "Run with the Wind", "ac=6822" },
 		{ "Where's My Air Support?", "ac=6688" },
@@ -414,7 +441,7 @@ db.AtlasMaps = {
 	},
 	SiegeofOrgrimmarA = {
 		ZoneName = { BZ["Siege of Orgrimmar"]..ALC["MapA"] },
-		Location = { BZ["Vale of Eternal Blossoms"]..ALC["Slash"]..BZ["Orgrimmar"] },
+		Location = { BZ["Vale of Eternal Blossoms"]..SLASH..BZ["Orgrimmar"] },
 		DungeonID = 714,
 		DungeonHeroicID = 715,
 		Acronym = L["SoO"],
@@ -424,14 +451,14 @@ db.AtlasMaps = {
 		JournalInstanceID = 369,
 		Module = "Atlas_MistsofPandaria",
 		NextMap = "SiegeofOrgrimmarB",
-		{ BLUE.." A) "..ALC["Entrance"], 10001 },
-		{ BLUE.." B-D) "..ALC["Connection"], 10002 },
-		{ WHIT.." 1) "..Atlas_GetBossName("Immerseus", 852), 852 },
-		{ WHIT.." 3) "..Atlas_GetBossName("Norushen", 866), 866 },
-		{ WHIT..INDENT..Atlas_GetBossName("Amalgam of Corruption", 866, 2), 866 },
-		{ WHIT.." 4) "..Atlas_GetBossName("Sha of Pride", 867), 867 },
+		{ BLUE.." A) "..ENTRANCE, 10001 },
+		{ BLUE.." B-D) "..CONNECTION, 10002 },
+		{ WHIT.." 1) "..getBossName("Immerseus", 852), 852 },
+		{ WHIT.." 3) "..getBossName("Norushen", 866), 866 },
+		{ WHIT..INDENT..getBossName("Amalgam of Corruption", 866, 2), 866 },
+		{ WHIT.." 4) "..getBossName("Sha of Pride", 867), 867 },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
+		{ LBLU..ACHIEVEMENTS..COLON },
 		{ "Vale of Eternal Sorrows", "ac=8458" },
 		{ "Gates of Retribution", "ac=8459" },
 		{ "The Underhold", "ac=8461" },
@@ -473,7 +500,7 @@ db.AtlasMaps = {
 	},
 	SiegeofOrgrimmarB = {
 		ZoneName = { BZ["Siege of Orgrimmar"]..ALC["MapB"] },
-		Location = { BZ["Vale of Eternal Blossoms"]..ALC["Slash"]..BZ["Orgrimmar"] },
+		Location = { BZ["Vale of Eternal Blossoms"]..SLASH..BZ["Orgrimmar"] },
 		DungeonID = 714,
 		DungeonHeroicID = 715,
 		Acronym = L["SoO"],
@@ -484,13 +511,13 @@ db.AtlasMaps = {
 		Module = "Atlas_MistsofPandaria",
 		PrevMap = "SiegeofOrgrimmarA",
 		NextMap = "SiegeofOrgrimmarC",
-		{ BLUE.." B-C) "..ALC["Connection"], 10001 },
-		{ WHIT.." 2) "..Atlas_GetBossName("The Fallen Protectors", 849), 849 },
-		{ WHIT..INDENT..Atlas_GetBossName("He Softfoot", 849, 2), 849 },
-		{ WHIT..INDENT..Atlas_GetBossName("Rook Stonetoe", 849, 1), 849 },
-		{ WHIT..INDENT..Atlas_GetBossName("Sun Tenderheart", 849, 3), 849 },
+		{ BLUE.." B-C) "..CONNECTION, 10001 },
+		{ WHIT.." 2) "..getBossName("The Fallen Protectors", 849), 849 },
+		{ WHIT..INDENT..getBossName("He Softfoot", 849, 2), 849 },
+		{ WHIT..INDENT..getBossName("Rook Stonetoe", 849, 1), 849 },
+		{ WHIT..INDENT..getBossName("Sun Tenderheart", 849, 3), 849 },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
+		{ LBLU..ACHIEVEMENTS..COLON },
 		{ "Vale of Eternal Sorrows", "ac=8458" },
 		{ "Gates of Retribution", "ac=8459" },
 		{ "The Underhold", "ac=8461" },
@@ -532,7 +559,7 @@ db.AtlasMaps = {
 	},
 	SiegeofOrgrimmarC = {
 		ZoneName = { BZ["Siege of Orgrimmar"]..ALC["MapC"] },
-		Location = { BZ["Vale of Eternal Blossoms"]..ALC["Slash"]..BZ["Orgrimmar"] },
+		Location = { BZ["Vale of Eternal Blossoms"]..SLASH..BZ["Orgrimmar"] },
 		DungeonID = 714,
 		DungeonHeroicID = 715,
 		Acronym = L["SoO"],
@@ -543,14 +570,14 @@ db.AtlasMaps = {
 		Module = "Atlas_MistsofPandaria",
 		PrevMap = "SiegeofOrgrimmarB",
 		NextMap = "SiegeofOrgrimmarD",
-		{ BLUE.." D-E) "..ALC["Connection"], 10001 },
-		{ WHIT.." 5) "..Atlas_GetBossName("Galakras", 868), 868 },
-		{ WHIT.." 6) "..Atlas_GetBossName("Iron Juggernaut", 864), 864 },
-		{ WHIT.." 7) "..Atlas_GetBossName("Kor'kron Dark Shaman", 856), 856 },
-		{ WHIT..INDENT..Atlas_GetBossName("Earthbreaker Haromm", 856, 1), 856 },
-		{ WHIT..INDENT..Atlas_GetBossName("Wavebinder Kardris", 856, 2), 856 },
+		{ BLUE.." D-E) "..CONNECTION, 10001 },
+		{ WHIT.." 5) "..getBossName("Galakras", 868), 868 },
+		{ WHIT.." 6) "..getBossName("Iron Juggernaut", 864), 864 },
+		{ WHIT.." 7) "..getBossName("Kor'kron Dark Shaman", 856), 856 },
+		{ WHIT..INDENT..getBossName("Earthbreaker Haromm", 856, 1), 856 },
+		{ WHIT..INDENT..getBossName("Wavebinder Kardris", 856, 2), 856 },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
+		{ LBLU..ACHIEVEMENTS..COLON },
 		{ "Vale of Eternal Sorrows", "ac=8458" },
 		{ "Gates of Retribution", "ac=8459" },
 		{ "The Underhold", "ac=8461" },
@@ -592,7 +619,7 @@ db.AtlasMaps = {
 	},
 	SiegeofOrgrimmarD = {
 		ZoneName = { BZ["Siege of Orgrimmar"]..ALC["MapD"] },
-		Location = { BZ["Vale of Eternal Blossoms"]..ALC["Slash"]..BZ["Orgrimmar"] },
+		Location = { BZ["Vale of Eternal Blossoms"]..SLASH..BZ["Orgrimmar"] },
 		DungeonID = 714,
 		DungeonHeroicID = 715,
 		Acronym = L["SoO"],
@@ -602,27 +629,27 @@ db.AtlasMaps = {
 		JournalInstanceID = 369,
 		Module = "Atlas_MistsofPandaria",
 		PrevMap = "SiegeofOrgrimmarC",
-		{ BLUE.." E) "..ALC["Connection"], 10001 },
-		{ WHIT.." 8) "..Atlas_GetBossName("General Nazgrim", 850), 850 },
-		{ WHIT.." 9) "..Atlas_GetBossName("Malkorok", 846), 846 },
-		{ WHIT.."10) "..Atlas_GetBossName("Spoils of Pandaria", 870), 870 },
-		{ WHIT..INDENT..Atlas_GetBossName("Secured Stockpile of Pandaren Spoils", 870, 1), 870 },
-		{ WHIT.."11) "..Atlas_GetBossName("Thok the Bloodthirsty", 851), 851 },
-		{ WHIT..INDENT..Atlas_GetBossName("Kor'kron Jailer", 851, 2), 851 },
-		{ WHIT.."12) "..Atlas_GetBossName("Siegecrafter Blackfuse", 865), 865 },
-		{ WHIT.."13) "..Atlas_GetBossName("Paragons of the Klaxxi", 853), 853 },
-		{ WHIT..INDENT..Atlas_GetBossName("Hisek the Swarmkeeper", 853, 2), 853 },
-		{ WHIT..INDENT..Atlas_GetBossName("Iyyokuk the Lucid", 853, 8), 853 },
-		{ WHIT..INDENT..Atlas_GetBossName("Ka'roz the Locust", 853, 3), 853 },
-		{ WHIT..INDENT..Atlas_GetBossName("Kaz'tik the Manipulator", 853, 5), 853 },
-		{ WHIT..INDENT..Atlas_GetBossName("Kil'ruk the Wind-Reaver", 853, 9), 853 },
-		{ WHIT..INDENT..Atlas_GetBossName("Korven the Prime", 853, 4), 853 },
-		{ WHIT..INDENT..Atlas_GetBossName("Rik'kal the Dissector", 853, 7), 853 },
-		{ WHIT..INDENT..Atlas_GetBossName("Skeer the Bloodseeker", 853, 1), 853 },
-		{ WHIT..INDENT..Atlas_GetBossName("Xaril the Poisoned Mind", 853, 6), 853 },
-		{ WHIT.."14) "..Atlas_GetBossName("Garrosh Hellscream", 869), 869 },
+		{ BLUE.." E) "..CONNECTION, 10001 },
+		{ WHIT.." 8) "..getBossName("General Nazgrim", 850), 850 },
+		{ WHIT.." 9) "..getBossName("Malkorok", 846), 846 },
+		{ WHIT.."10) "..getBossName("Spoils of Pandaria", 870), 870 },
+		{ WHIT..INDENT..getBossName("Secured Stockpile of Pandaren Spoils", 870, 1), 870 },
+		{ WHIT.."11) "..getBossName("Thok the Bloodthirsty", 851), 851 },
+		{ WHIT..INDENT..getBossName("Kor'kron Jailer", 851, 2), 851 },
+		{ WHIT.."12) "..getBossName("Siegecrafter Blackfuse", 865), 865 },
+		{ WHIT.."13) "..getBossName("Paragons of the Klaxxi", 853), 853 },
+		{ WHIT..INDENT..getBossName("Hisek the Swarmkeeper", 853, 2), 853 },
+		{ WHIT..INDENT..getBossName("Iyyokuk the Lucid", 853, 8), 853 },
+		{ WHIT..INDENT..getBossName("Ka'roz the Locust", 853, 3), 853 },
+		{ WHIT..INDENT..getBossName("Kaz'tik the Manipulator", 853, 5), 853 },
+		{ WHIT..INDENT..getBossName("Kil'ruk the Wind-Reaver", 853, 9), 853 },
+		{ WHIT..INDENT..getBossName("Korven the Prime", 853, 4), 853 },
+		{ WHIT..INDENT..getBossName("Rik'kal the Dissector", 853, 7), 853 },
+		{ WHIT..INDENT..getBossName("Skeer the Bloodseeker", 853, 1), 853 },
+		{ WHIT..INDENT..getBossName("Xaril the Poisoned Mind", 853, 6), 853 },
+		{ WHIT.."14) "..getBossName("Garrosh Hellscream", 869), 869 },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
+		{ LBLU..ACHIEVEMENTS..COLON },
 		{ "Vale of Eternal Sorrows", "ac=8458" },
 		{ "Gates of Retribution", "ac=8459" },
 		{ "The Underhold", "ac=8461" },
@@ -671,15 +698,15 @@ db.AtlasMaps = {
 		WorldMapID = 439,
 		JournalInstanceID = 302,
 		Module = "Atlas_MistsofPandaria",
-		{ BLUE.." A) "..ALC["Entrance"], 10001 },
-		{ BLUE.." B-E) "..ALC["Connection"], 10002 },
-		{ WHIT.." 1) "..Atlas_GetBossName("Ook-Ook", 668), 668 },
-		{ WHIT.." 2) "..Atlas_GetBossName("Hoptallus", 669), 669 },
-		{ WHIT.." 3) "..Atlas_GetBossName("Yan-Zhu the Uncasked", 670), 670 },
+		{ BLUE.." A) "..ENTRANCE, 10001 },
+		{ BLUE.." B-E) "..CONNECTION, 10002 },
+		{ WHIT.." 1) "..getBossName("Ook-Ook", 668), 668 },
+		{ WHIT.." 2) "..getBossName("Hoptallus", 669), 669 },
+		{ WHIT.." 3) "..getBossName("Yan-Zhu the Uncasked", 670), 670 },
 		{ GREN.." 1') "..L["Auntie Stormstout"], 10003 },
 		{ GREN..INDENT..L["Chen Stormstout"] },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
+		{ LBLU..ACHIEVEMENTS..COLON },
 		{ "Hopocalypse Now!", "ac=6420" },
 		{ "Keep Rollin' Rollin' Rollin'", "ac=6089" },
 		{ "How Did He Get Up There?", "ac=6400" },
@@ -701,15 +728,15 @@ db.AtlasMaps = {
 		WorldMapID = 429,
 		JournalInstanceID = 313,
 		Module = "Atlas_MistsofPandaria",
-		{ BLUE.." A) "..ALC["Entrance"], 10001 },
-		{ WHIT.." 1) "..Atlas_GetBossName("Wise Mari", 672), 672 },
-		{ WHIT.." 2) "..Atlas_GetBossName("Lorewalker Stonestep", 664), 664 },
-		{ WHIT.." 3) "..Atlas_GetBossName("Liu Flameheart", 658), 658 },
-		{ WHIT.." 4) "..Atlas_GetBossName("Sha of Doubt", 335), 335 },
+		{ BLUE.." A) "..ENTRANCE, 10001 },
+		{ WHIT.." 1) "..getBossName("Wise Mari", 672), 672 },
+		{ WHIT.." 2) "..getBossName("Lorewalker Stonestep", 664), 664 },
+		{ WHIT.." 3) "..getBossName("Liu Flameheart", 658), 658 },
+		{ WHIT.." 4) "..getBossName("Sha of Doubt", 335), 335 },
 		{ GREN.." 1') "..L["Master Windstrong"], 10002 },
 		{ GREN..INDENT..L["Priestess Summerpetal"] },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
+		{ LBLU..ACHIEVEMENTS..COLON },
 		{ "Hydrophobia", "ac=6460" },
 		{ "Cleaning Up", "ac=6475" },
 		{ "Seeds of Doubt", "ac=6671" },
@@ -733,16 +760,16 @@ db.AtlasMaps = {
 		WorldMapID = 456,
 		JournalInstanceID = 320,
 		Module = "Atlas_MistsofPandaria",
-		{ BLUE.." A) "..ALC["Entrance"], 10001 },
-		{ WHIT.." 1) "..Atlas_GetBossName("Protectors of the Endless", 683), 683 },
-		{ WHIT..INDENT..Atlas_GetBossName("Elder Asani", 683, 3), 683 },
-		{ WHIT..INDENT..Atlas_GetBossName("Elder Regail", 683, 2), 683 },
-		{ WHIT..INDENT..Atlas_GetBossName("Protector Kaolan", 683, 1), 683 },
-		{ WHIT.." 2) "..Atlas_GetBossName("Tsulong", 742), 742 },
-		{ WHIT.." 3) "..Atlas_GetBossName("Lei Shi", 729), 729 },
-		{ WHIT.." 4) "..Atlas_GetBossName("Sha of Fear", 709), 709 },
+		{ BLUE.." A) "..ENTRANCE, 10001 },
+		{ WHIT.." 1) "..getBossName("Protectors of the Endless", 683), 683 },
+		{ WHIT..INDENT..getBossName("Elder Asani", 683, 3), 683 },
+		{ WHIT..INDENT..getBossName("Elder Regail", 683, 2), 683 },
+		{ WHIT..INDENT..getBossName("Protector Kaolan", 683, 1), 683 },
+		{ WHIT.." 2) "..getBossName("Tsulong", 742), 742 },
+		{ WHIT.." 3) "..getBossName("Lei Shi", 729), 729 },
+		{ WHIT.." 4) "..getBossName("Sha of Fear", 709), 709 },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
+		{ LBLU..ACHIEVEMENTS..COLON },
 		{ "Power Overwhelming", "ac=6717" },
 		{ "Who's Got Two Green Thumbs?", "ac=6933" },
 		{ "Face Clutchers", "ac=6824" },
@@ -770,20 +797,20 @@ db.AtlasMaps = {
 		JournalInstanceID = 362,
 		Module = "Atlas_MistsofPandaria",
 		NextMap = "ThroneofThunderB",
-		{ ORNG..REPUTATION..ALC["Colon"]..BF["Shado-Pan Assault"] },
-		{ BLUE.." A) "..ALC["Entrance"], 10001 },
-		{ BLUE.." B) "..ALC["Connection"], 10002 },
-		{ WHIT.." 1) "..Atlas_GetBossName("Jin'rokh the Breaker", 827), 827 },
-		{ WHIT.." 2) "..Atlas_GetBossName("Horridon", 819), 819 },
-		{ WHIT.." 3) "..Atlas_GetBossName("Council of Elders", 816), 816 },
-		{ WHIT..INDENT..Atlas_GetBossName("Frost King Malakk", 816, 3), 816 },
-		{ WHIT..INDENT..Atlas_GetBossName("High PRIESTess Mar'li", 816, 4), 816 },
-		{ WHIT..INDENT..Atlas_GetBossName("Kazra'jin", 816, 1), 816 },
-		{ WHIT..INDENT..Atlas_GetBossName("Sul the Sandcrawler", 816, 2), 816 },
-		{ ORNG.." 1) "..L["Monara <The Last Queen>"]..ALC["L-Parenthesis"]..ALC["Rare"]..ALC["R-Parenthesis"], 10003 },
-		{ ORNG.." 2) "..L["No'ku Stormsayer <Lord of Tempest>"]..ALC["L-Parenthesis"]..ALC["Rare"]..ALC["R-Parenthesis"], 10004 },
+		{ ORNG..REPUTATION..COLON..BF["Shado-Pan Assault"] },
+		{ BLUE.." A) "..ENTRANCE, 10001 },
+		{ BLUE.." B) "..CONNECTION, 10002 },
+		{ WHIT.." 1) "..getBossName("Jin'rokh the Breaker", 827), 827 },
+		{ WHIT.." 2) "..getBossName("Horridon", 819), 819 },
+		{ WHIT.." 3) "..getBossName("Council of Elders", 816), 816 },
+		{ WHIT..INDENT..getBossName("Frost King Malakk", 816, 3), 816 },
+		{ WHIT..INDENT..getBossName("High PRIESTess Mar'li", 816, 4), 816 },
+		{ WHIT..INDENT..getBossName("Kazra'jin", 816, 1), 816 },
+		{ WHIT..INDENT..getBossName("Sul the Sandcrawler", 816, 2), 816 },
+		{ ORNG.." 1) "..L["Monara <The Last Queen>"]..L_PAREN..RARE..R_PAREN, 10003 },
+		{ ORNG.." 2) "..L["No'ku Stormsayer <Lord of Tempest>"]..L_PAREN..RARE..R_PAREN, 10004 },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
+		{ LBLU..ACHIEVEMENTS..COLON },
 		{ "Last Stand of the Zandalari", "ac=8069" },
 		{ "Forgotten Depths", "ac=8070" },
 		{ "Halls of Flesh-Shaping", "ac=8071" },
@@ -806,14 +833,14 @@ db.AtlasMaps = {
 		Module = "Atlas_MistsofPandaria",
 		PrevMap = "ThroneofThunderA",
 		NextMap = "ThroneofThunderC",
-		{ ORNG..REPUTATION..ALC["Colon"]..BF["Shado-Pan Assault"] },
-		{ BLUE.." B-C) "..ALC["Connection"], 10001 },
-		{ WHIT.." 4) "..Atlas_GetBossName("Tortos", 825), 825 },
-		{ WHIT.." 5) "..Atlas_GetBossName("Megaera", 821), 821 },
-		{ WHIT.." 6) "..Atlas_GetBossName("Ji-Kun", 828), 828 },
-		{ ORNG.." 3) "..L["Rocky Horror"]..ALC["L-Parenthesis"]..ALC["Rare"]..ALC["R-Parenthesis"], 10002 },
+		{ ORNG..REPUTATION..COLON..BF["Shado-Pan Assault"] },
+		{ BLUE.." B-C) "..CONNECTION, 10001 },
+		{ WHIT.." 4) "..getBossName("Tortos", 825), 825 },
+		{ WHIT.." 5) "..getBossName("Megaera", 821), 821 },
+		{ WHIT.." 6) "..getBossName("Ji-Kun", 828), 828 },
+		{ ORNG.." 3) "..L["Rocky Horror"]..L_PAREN..RARE..R_PAREN, 10002 },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
+		{ LBLU..ACHIEVEMENTS..COLON },
 		{ "Last Stand of the Zandalari", "ac=8069" },
 		{ "Forgotten Depths", "ac=8070" },
 		{ "Halls of Flesh-Shaping", "ac=8071" },
@@ -836,17 +863,17 @@ db.AtlasMaps = {
 		Module = "Atlas_MistsofPandaria",
 		PrevMap = "ThroneofThunderB",
 		NextMap = "ThroneofThunderD",
-		{ ORNG..REPUTATION..ALC["Colon"]..BF["Shado-Pan Assault"] },
-		{ BLUE.." C-E) "..ALC["Connection"], 10001 },
-		{ WHIT.." 7) "..Atlas_GetBossName("Durumu the Forgotten", 818), 818 },
-		{ ORNG..INDENT..L["Focused Eye"]..ALC["L-Parenthesis"]..ALC["Rare"]..ALC["R-Parenthesis"] },
-		{ ORNG..INDENT..L["Unblinking Eye"]..ALC["L-Parenthesis"]..ALC["Rare"]..ALC["R-Parenthesis"] },
-		{ WHIT.." 8) "..Atlas_GetBossName("Primordius", 820), 820 },
-		{ WHIT.." 9) "..Atlas_GetBossName("Dark Animus", 824), 824 },
-		{ ORNG.." 4) "..L["Archritualist Kelada"]..ALC["L-Parenthesis"]..ALC["Rare"]..ALC["R-Parenthesis"], 10002 },
-		{ ORNG.." 5) "..L["Flesh'rok the Diseased <Primordial Saurok Horror>"]..ALC["L-Parenthesis"]..ALC["Rare"]..ALC["R-Parenthesis"], 10003 },
+		{ ORNG..REPUTATION..COLON..BF["Shado-Pan Assault"] },
+		{ BLUE.." C-E) "..CONNECTION, 10001 },
+		{ WHIT.." 7) "..getBossName("Durumu the Forgotten", 818), 818 },
+		{ ORNG..INDENT..L["Focused Eye"]..L_PAREN..RARE..R_PAREN },
+		{ ORNG..INDENT..L["Unblinking Eye"]..L_PAREN..RARE..R_PAREN },
+		{ WHIT.." 8) "..getBossName("Primordius", 820), 820 },
+		{ WHIT.." 9) "..getBossName("Dark Animus", 824), 824 },
+		{ ORNG.." 4) "..L["Archritualist Kelada"]..L_PAREN..RARE..R_PAREN, 10002 },
+		{ ORNG.." 5) "..L["Flesh'rok the Diseased <Primordial Saurok Horror>"]..L_PAREN..RARE..R_PAREN, 10003 },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
+		{ LBLU..ACHIEVEMENTS..COLON },
 		{ "Last Stand of the Zandalari", "ac=8069" },
 		{ "Forgotten Depths", "ac=8070" },
 		{ "Halls of Flesh-Shaping", "ac=8071" },
@@ -868,20 +895,20 @@ db.AtlasMaps = {
 		JournalInstanceID = 362,
 		Module = "Atlas_MistsofPandaria",
 		PrevMap = "ThroneofThunderC",
-		{ ORNG..REPUTATION..ALC["Colon"]..BF["Shado-Pan Assault"] },
-		{ BLUE.." D-F) "..ALC["Connection"], 10001 },
-		{ WHIT.." 10) "..Atlas_GetBossName("Iron Qon", 817), 817 },
-		{ WHIT..INDENT..Atlas_GetBossName("Dam'ren", 817, 4), 817 },
-		{ WHIT..INDENT..Atlas_GetBossName("Quet'zal", 817, 3), 817 },
-		{ WHIT..INDENT..Atlas_GetBossName("Ro'shak", 817, 2), 817 },
-		{ WHIT.." 11) "..Atlas_GetBossName("Twin Consorts", 829), 829 },
-		{ WHIT..INDENT..Atlas_GetBossName("Lu'lin", 829, 1), 829 },
-		{ WHIT..INDENT..Atlas_GetBossName("Suen", 829, 2), 829 },
-		{ WHIT.." 12) "..Atlas_GetBossName("Lei Shen", 832), 832 },
-		{ WHIT.." 13) "..Atlas_GetBossName("Ra-den", 831)..ALC["L-Parenthesis"]..ALC["Heroic"]..ALC["R-Parenthesis"], 831 },
-		{ ORNG.." 6) "..L["Zao'cho <The Emperor's Shield>"]..ALC["L-Parenthesis"]..ALC["Rare"]..ALC["R-Parenthesis"], 10002 },
+		{ ORNG..REPUTATION..COLON..BF["Shado-Pan Assault"] },
+		{ BLUE.." D-F) "..CONNECTION, 10001 },
+		{ WHIT.." 10) "..getBossName("Iron Qon", 817), 817 },
+		{ WHIT..INDENT..getBossName("Dam'ren", 817, 4), 817 },
+		{ WHIT..INDENT..getBossName("Quet'zal", 817, 3), 817 },
+		{ WHIT..INDENT..getBossName("Ro'shak", 817, 2), 817 },
+		{ WHIT.." 11) "..getBossName("Twin Consorts", 829), 829 },
+		{ WHIT..INDENT..getBossName("Lu'lin", 829, 1), 829 },
+		{ WHIT..INDENT..getBossName("Suen", 829, 2), 829 },
+		{ WHIT.." 12) "..getBossName("Lei Shen", 832), 832 },
+		{ WHIT.." 13) "..getBossName("Ra-den", 831)..L_PAREN..ALC["Heroic"]..R_PAREN, 831 },
+		{ ORNG.." 6) "..L["Zao'cho <The Emperor's Shield>"]..L_PAREN..RARE..R_PAREN, 10002 },
 		{ "" },
-		{ LBLU..ACHIEVEMENTS..ALC["Colon"] },
+		{ LBLU..ACHIEVEMENTS..COLON },
 		{ "Last Stand of the Zandalari", "ac=8069" },
 		{ "Forgotten Depths", "ac=8070" },
 		{ "Halls of Flesh-Shaping", "ac=8071" },
@@ -936,6 +963,7 @@ db.AtlasMaps_NPC_DB = {
 		{ "B", 10002, 216, 165 },
 		{ "B", 10002, 229, 197 },
 	},
+	--[[
 	ScarletHalls = {
 		{ 1, 10002, 230, 384 }, -- Commander Lindon
 		{ 2, 660, 260, 308 }, -- Houndmaster Braun
@@ -979,8 +1007,7 @@ db.AtlasMaps_NPC_DB = {
 		{ "4'", 10007, 317, 153 },
 		{ "5'", 10008, 343, 203 },
 		{ "6'", 10009, 344, 226 },
-		
-	},
+	},]]
 	ShadoPanMonasteryA = {
 		{ 1, 673, 329, 310 }, -- Gu Cloudstrike
 		{ 4, 686, 366, 236 }, -- Taran Zhu
@@ -1273,28 +1300,28 @@ db.SubZoneData = {
 	Not for localization.
 ]]
 db.OutdoorZoneToAtlas = {
-	[BZ["Dread Wastes"]] =			"HeartofFear",
-	[BZ["Kun-Lai Summit"]] = 		"MoguShanVaults",	-- MoP
-	[BZ["Tirisfal Glades"]] = 		"ScarletMonasteryEnt",	-- MoP
+	[BZ["Dread Wastes"]] =				"HeartofFear",
+	[BZ["Kun-Lai Summit"]] = 			"MoguShanVaults",	-- MoP
+	--[BZ["Tirisfal Glades"]] = 			"ScarletMonasteryEnt",	-- MoP
 	[BZ["Western Plaguelands"]] = 		"Scholomance",		-- MoP
-	[BZ["Townlong Steppes"]] = 		"SiegeofNiuzaoTempleA",	-- MoP
+	[BZ["Townlong Steppes"]] = 			"SiegeofNiuzaoTempleA",	-- MoP
 	[BZ["Vale of Eternal Blossoms"]] = 	"SiegeofOrgrimmarA",	-- MoP
-	[BZ["The Jade Forest"]] = 		"TempleOfTheJadeSerpent",	-- MoP
-	[BZ["The Veiled Stair"]] = 		"TerraceofEndlessSpring",	-- MoP
-	[BZ["Isle of Thunder"]] = 		"ThroneofThunderA",	-- MoP
+	[BZ["The Jade Forest"]] = 			"TempleOfTheJadeSerpent",	-- MoP
+	[BZ["The Veiled Stair"]] = 			"TerraceofEndlessSpring",	-- MoP
+	[BZ["Isle of Thunder"]] = 			"ThroneofThunderA",	-- MoP
 	[BZ["Valley of the Four Winds"]] = 	"StormstoutBrewery",
 }
 
 -- Yes, the following two tables are redundant, but they're both here in case there's ever more than one entrance map for an instance
 -- Entrance maps to instance maps
 db.EntToInstMatches = {
-	["ScarletMonasteryEnt"] =		{"ScarletHalls","ScarletMonastery"},
+	--["ScarletMonasteryEnt"] =		{"ScarletHalls","ScarletMonastery"},
 }
 
 -- Instance maps to entrance maps
 db.InstToEntMatches = {
-	["ScarletHalls"] =			{"ScarletMonasteryEnt"},
-	["ScarletMonastery"] =			{"ScarletMonasteryEnt"},
+	--["ScarletHalls"] =			{"ScarletMonasteryEnt"},
+	--["ScarletMonastery"] =			{"ScarletMonasteryEnt"},
 }
 
 -- Defines the instance which have multiple maps
@@ -1332,7 +1359,7 @@ db.SubZoneAssoc = {
 
 db.DropDownLayouts_Order = {
 	[ATLAS_DDL_CONTINENT] = {
-		ATLAS_DDL_CONTINENT_EASTERN,
+--		ATLAS_DDL_CONTINENT_EASTERN,
 		ATLAS_DDL_CONTINENT_PANDARIA,
 	},
 	[ATLAS_DDL_LEVEL] = {
@@ -1345,12 +1372,14 @@ db.DropDownLayouts_Order = {
 
 db.DropDownLayouts = {
 	[ATLAS_DDL_CONTINENT] = {
+--[[
 		[ATLAS_DDL_CONTINENT_EASTERN] = {
 			"Scholomance",			-- Mop, Classic WoW
 			"ScarletMonasteryEnt",		-- Mop, Classic WoW
 			"ScarletHalls",			-- Mop, Classic WoW
 			"ScarletMonastery",		-- Mop, Classic WoW
 		},
+		]]
 		[ATLAS_DDL_CONTINENT_PANDARIA] = {
 			"GateoftheSettingSun",
 			"HeartofFear",
@@ -1379,10 +1408,10 @@ db.DropDownLayouts = {
 			"HeartofFear",
 			"MoguShanPalace",
 			"MoguShanVaults",
-			"ScarletMonasteryEnt",
-			"ScarletHalls",
-			"ScarletMonastery",
-			"Scholomance",
+		--	"ScarletMonasteryEnt",
+		--	"ScarletHalls",
+		--	"ScarletMonastery",
+		--	"Scholomance",
 			"ShadoPanMonasteryA",
 			"ShadoPanMonasteryB",
 			"SiegeofNiuzaoTempleA",
@@ -1408,10 +1437,10 @@ db.DropDownLayouts = {
 			"ShadoPanMonasteryB",		-- MoP
 			"StormstoutBrewery",		-- MoP
 			"TempleOfTheJadeSerpent",	-- MoP
-			"Scholomance",			-- MoP
-			"ScarletMonasteryEnt",		-- MoP
-			"ScarletHalls",			-- MoP
-			"ScarletMonastery",		-- MoP
+		--	"Scholomance",			-- MoP
+		--	"ScarletMonasteryEnt",		-- MoP
+		--	"ScarletHalls",			-- MoP
+		--	"ScarletMonastery",		-- MoP
 			"HeartofFear",			-- MoP
 			"MoguShanVaults",		-- MoP
 			"SiegeofNiuzaoTempleA",		-- MoP
@@ -1432,10 +1461,10 @@ db.DropDownLayouts = {
 			"GateoftheSettingSun",		-- MoP
 			"MoguShanPalace",		-- MoP
 			"ShadoPanMonasteryA",		-- MoP
-			"ScarletHalls",			-- MoP
-			"ScarletMonastery",		-- MoP
-			"ScarletMonasteryEnt",		-- MoP
-			"Scholomance",			-- MoP
+		--	"ScarletHalls",			-- MoP
+		--	"ScarletMonastery",		-- MoP
+		--	"ScarletMonasteryEnt",		-- MoP
+		--	"Scholomance",			-- MoP
 			"ShadoPanMonasteryB",		-- MoP
 			"StormstoutBrewery",		-- MoP
 			"TempleOfTheJadeSerpent",	-- MoP
@@ -1473,9 +1502,9 @@ db.DropDownLayouts = {
 			"HeartofFear",			-- MoP
 			"MoguShanPalace",		-- MoP
 			"MoguShanVaults",		-- MoP
-			"ScarletHalls",			-- MoP
-			"ScarletMonastery",		-- MoP
-			"Scholomance",			-- MoP
+		--	"ScarletHalls",			-- MoP
+		--	"ScarletMonastery",		-- MoP
+		--	"Scholomance",			-- MoP
 			"ShadoPanMonasteryA",		-- MoP
 			"ShadoPanMonasteryB",		-- MoP
 			"SiegeofNiuzaoTempleA",		-- MoP
@@ -1493,7 +1522,7 @@ db.DropDownLayouts = {
 			"ThroneofThunderD",		-- MoP
 		},
 		[ATLAS_DDL_TYPE_ENTRANCE] = {
-			"ScarletMonasteryEnt",		-- MoP
+		--	"ScarletMonasteryEnt",		-- MoP
 		},
 	},
 }
