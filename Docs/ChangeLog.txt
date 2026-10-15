@@ -7,6 +7,10 @@ Copyright 2011 ~ 2026 - Arith Hsu, Atlas Team
 = Change Log =
 ==============
 
+v1.54.00 (Oct. 15, 2026)
+------------------------
+- ToC Update to support WoW 12.1.5
+
 v1.53.01 (Oct. 14, 2026)
 ------------------------
 - Remove Scarlet Monastery and Scholomance from the module, leave them in Classic WoW (Kalimdor & Eastern Kingdoms)
@@ -31,7 +35,7 @@ v1.52.01 (Nov. 19, 2022)
 ------------------------
 - Toc update to support WoW 10.0.2
 
-1.52.00 (Nov. 06, 2022)
+v1.52.00 (Nov. 06, 2022)
 ------------------------
 - Toc update to support WoW 10.0.0
 
@@ -65,7 +69,7 @@ v1.49.01 (Jun. 30, 2021)
 
 v1.49.00 (May 20, 2021)
 ------------------------
-- ToC update to support WoW 9.0.1
+- ToC update to support WoW 9.0.5
 
 v1.48.00 (Oct. 18, 2020)
 ------------------------
