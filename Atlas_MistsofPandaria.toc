@@ -1,4 +1,4 @@
-﻿## Interface: 50504, 120100
+﻿## Interface: 50504, 120105
 ## Title: Atlas Mists of Pandaria
 ## Notes: Mists of Pandaria instance maps for Atlas
 ## Title-deDE: Atlas Mists of Pandaria
